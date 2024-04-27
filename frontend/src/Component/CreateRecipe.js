@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Button, CircularProgress, Grid, Paper, TextField, Typography, Alert } from '@mui/material';
 import axios from 'axios';
 
 const CreateRecipe = () => {
-  // Assuming 'userId' is stored in localStorage when the user logs in
   const creatorId = localStorage.getItem('userId');
   const [formData, setFormData] = useState({
     name: '',
@@ -15,6 +14,12 @@ const CreateRecipe = () => {
   const [fileName, setFileName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [fadeIn, setFadeIn] = useState(false); // State for controlling the fade-in effect
+
+  useEffect(() => {
+    // Trigger the fade-in effect after the component mounts
+    setFadeIn(true);
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -47,9 +52,8 @@ const CreateRecipe = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
-      // Handle success
       console.log(response.data);
-      alert('Recipe created successfully!');  //Design a different kind of alert box.
+      alert('Recipe created successfully!');
       setFormData({ name: '', description: '', tags: '', ingredients: '' });
       setFile(null);
       setFileName('');
@@ -61,19 +65,31 @@ const CreateRecipe = () => {
   };
 
   return (
-    <Grid container component="main" sx={{ height: '93vh', overflow: 'hidden' }}>
+    <Grid container component="main" sx={{ height: '93vh', overflow: 'hidden', position: 'relative' }}>
       {/* Image side */}
       <Grid item xs={false} sm={4} md={7} sx={{
+        position: 'relative',
         backgroundImage: 'url(http://localhost:5000/images/createRecipe.png)',
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-      }} />
+      }}>
+        <Typography component="h1" variant="h3" sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 1,
+          color: 'white',
+          opacity: fadeIn ? 0.8 : 0, // Initially hidden, then fades in
+          transition: 'opacity 2s ease', // CSS transition for opacity
+          textAlign: 'center',
+          fontSize: '6rem',
+        }}>Create New Recipe</Typography>
+      </Grid>
       {/* Form side */}
-
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
         <Box sx={{ my: 8, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Typography component="h1" variant="h5">Create a New Recipe</Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
             {/* Form fields */}
             <TextField margin="normal" required fullWidth id="name" label="Recipe Name" name="name" autoComplete="name" autoFocus value={formData.name} onChange={handleChange} />
@@ -83,14 +99,14 @@ const CreateRecipe = () => {
             {/* File upload feedback */}
             {fileName && <Typography variant="subtitle1" gutterBottom>Selected file: {fileName}</Typography>}
             {/* Image upload button */}
-            <Button variant="contained" component="label" fullWidth sx={{ mt: 3, mb: 2, color: 'white', backgroundColor: 'green' }}>
+            <Button variant="contained" component="label" fullWidth sx={{ mt: 3, mb: 2, color: 'white', backgroundColor: 'green', '&:hover': { backgroundColor: 'darkgreen' } }}>
               Upload Image
               <input type="file" hidden onChange={handleFileChange} />
             </Button>
             {/* Loading indicator */}
             {loading && <CircularProgress size={24} sx={{ display: 'block', mx: 'auto', my: 2 }} />}
             {/* Submit button */}
-            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, backgroundColor: 'green' }}>Create Recipe</Button>
+            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, backgroundColor: 'green', '&:hover': { backgroundColor: 'darkgreen' } }}>Create Recipe</Button>
             {/* Error message */}
             {error && <Alert severity="error" sx={{ width: '100%', mt: 2 }}>{error}</Alert>}
           </Box>

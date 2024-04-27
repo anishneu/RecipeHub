@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
   Grid, Card, CardContent, CardMedia, Button, Typography,
-  Dialog, DialogActions, DialogTitle, CardActions, Snackbar, CircularProgress
+  Dialog, DialogActions, DialogTitle, CardActions, Snackbar, CircularProgress, Box
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,7 +19,7 @@ const UpdateRecipes = () => {
   useEffect(() => {
     document.body.style.backgroundColor = '#9575cd';
     return () => {
-        document.body.style.backgroundColor = '';
+      document.body.style.backgroundColor = '';
     };
   }, []);
 
@@ -79,56 +79,56 @@ const UpdateRecipes = () => {
 
   return (
     <div>
-      {loading ? <CircularProgress /> : (
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Typography variant="poster" component="h1" gutterBottom sx={{ textAlign: 'center', color: 'white', marginTop: '60px', marginBottom: '40px' }}>
-              Manage Recipes
-            </Typography>
-          </Grid>
-          {recipes.map((recipe) => (
-            <Grid item key={recipe._id} xs={12} sm={4} md={4} sx={{ mb: 5, ml: 4, mr: 4 }}>
-              <Card>
-                <CardMedia
-                  component="img"
-                  height="140"
-                  image={`http://localhost:5000/recipe/images/${recipe.creatorId}/${recipe.imagePath}`}
-                  alt={recipe.name}
-                />
-                <CardContent>
-                <Typography variant="h5" sx={{ textAlign: 'center', color: 'purple' }}>{recipe.name}</Typography>
-                </CardContent>
-                <CardActions sx={{ justifyContent: 'center', width: '100%' }}>
-                  <Button size="small" onClick={() => handleEdit(recipe.recipeId)}>Edit</Button>
-                  <div style={{ width: '50px' }} />
-                  <Button size="small" onClick={() => handleDeleteConfirmation(recipe)}>Delete</Button>
-                </CardActions>
-              </Card>
+      <Typography variant="poster" component="h1" gutterBottom sx={{ textAlign: 'center', color: 'white', marginTop: '60px', marginBottom: '40px' }}>
+        Manage Recipes
+      </Typography>
+      <Box textAlign="center" ml={4} mr={4}>
+        <Box bgcolor="white" p={4} borderRadius={10} boxShadow={4}>
+          {loading ? <CircularProgress /> : (
+            <Grid container spacing={2}>
+              {recipes.map((recipe) => (
+                <Grid item key={recipe._id} xs={12} sm={4} md={4}>
+                  <Card>
+                    <CardMedia
+                      component="img"
+                      height="140"
+                      image={`http://localhost:5000/recipe/images/${recipe.creatorId}/${recipe.imagePath}`}
+                      alt={recipe.name}
+                    />
+                    <CardContent>
+                      <Typography variant="h5" sx={{ textAlign: 'center', color: 'purple' }}>{recipe.name}</Typography>
+                    </CardContent>
+                    <CardActions sx={{ justifyContent: 'center', width: '100%' }}>
+                      <Button size="small" onClick={() => handleEdit(recipe.recipeId)}>Edit</Button>
+                      <Box width={2} />
+                      <Button size="small" onClick={() => handleDeleteConfirmation(recipe)}>Delete</Button>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              ))}
             </Grid>
-          ))}
-        </Grid>
-      )}
+          )}
 
-      <Dialog open={deleteConfirmOpen} onClose={() => setDeleteConfirmOpen(false)}>
-        <DialogTitle>{"Are you sure you want to delete this recipe?"}</DialogTitle>
-        <DialogActions>
-          <Button onClick={() => setDeleteConfirmOpen(false)}>Cancel</Button>
-          <Button onClick={handleDelete} color="primary" autoFocus>Confirm</Button>
-        </DialogActions>
-      </Dialog>
+          <Dialog open={deleteConfirmOpen} onClose={() => setDeleteConfirmOpen(false)}>
+            <DialogTitle>{"Are you sure you want to delete this recipe?"}</DialogTitle>
+            <DialogActions>
+              <Button onClick={() => setDeleteConfirmOpen(false)}>Cancel</Button>
+              <Button onClick={handleDelete} color="primary" autoFocus>Confirm</Button>
+            </DialogActions>
+          </Dialog>
 
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={() => setSnackbarOpen(false)}
-        message={snackbarMessage}
-      />
+          <Snackbar
+            open={snackbarOpen}
+            autoHideDuration={6000}
+            onClose={() => setSnackbarOpen(false)}
+            message={snackbarMessage}
+          />
+        </Box>
+      </Box>
     </div>
   );
 };
 
 export default UpdateRecipes;
-
-
 
 

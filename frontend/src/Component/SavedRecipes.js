@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Typography, Card, CardHeader, CardMedia, CardContent, CardActions, IconButton, Collapse } from '@mui/material';
+import { Grid, Typography, Card, CardHeader, CardMedia, CardContent, CardActions, IconButton, Collapse, Box } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 
@@ -49,61 +49,62 @@ const SavedRecipes = () => {
     };
 
     return (
-        <Grid container spacing={2} sx={{ padding: '20px' }}>
+        <Grid container spacing={2} sx={{ padding: '30px' }}>
             <Grid item xs={12}>
                 <Typography variant="poster" component="h1" gutterBottom sx={{ textAlign: 'center', color: 'white', marginTop: '30px', marginBottom: '40px' }}>
                     Saved Recipes
                 </Typography>
             </Grid>
-            {savedRecipes.length > 0 ? (
-                savedRecipes.map((recipe) => (
-                    <Grid item xs={12} sm={6} md={4} key={recipe.recipeId}>
-                        <Card sx={{ maxWidth: 345 }}>
-                            <CardHeader
-                                title={recipe.name}
-                                subheader={`Recipe ID: ${recipe.recipeId}`}
-                            />
-                            <CardMedia
-                                component="img"
-                                height="194"
-                                image={`http://localhost:5000/recipe/images/${recipe.creatorId}/${recipe.imagePath}`}
-                                alt={recipe.name}
-                                onClick={() => setExpandedCardId(expandedCardId === recipe.recipeId ? null : recipe.recipeId)}
-                                style={{ cursor: 'pointer' }}              
-                            />
-                            <Collapse in={expandedCardId === recipe.recipeId} timeout="auto" unmountOnExit>
-                                <CardContent>
-                                    <Typography variant="body2" color="text.secondary">
-                                        {recipe.description}
-                                    </Typography>
-                                    <Typography paragraph>Ingredients:</Typography>
-                                    <ul>
-                                        {recipe.ingredients.map((ingredient, index) => (
-                                            <li key={index}>{ingredient}</li>
-                                        ))}
-                                    </ul>
-                                </CardContent>
-                            </Collapse>
-                            <CardActions disableSpacing>
-                                <IconButton aria-label="delete" onClick={() => handleDeleteRecipe(recipe.recipeId)}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            </CardActions>
-                        </Card>
+            <Grid item xs={12}>
+                <Box bgcolor="#fff9c4" p={2} borderRadius={5}>
+                    <Grid container spacing={2}>
+                        {savedRecipes.length > 0 ? (
+                            savedRecipes.map((recipe) => (
+                                <Grid item xs={12} sm={6} md={3} key={recipe.recipeId}>
+                                    <Card sx={{ maxWidth: 360, borderRadius: 7 }}>
+                                        <CardHeader
+                                            title={recipe.name}
+                                            subheader={`Recipe ID: ${recipe.recipeId}`}
+                                        />
+                                        <CardMedia
+                                            component="img"
+                                            height="195"
+                                            image={`http://localhost:5000/recipe/images/${recipe.creatorId}/${recipe.imagePath}`}
+                                            alt={recipe.name}
+                                            onClick={() => setExpandedCardId(expandedCardId === recipe.recipeId ? null : recipe.recipeId)}
+                                            style={{ cursor: 'pointer' }}              
+                                        />
+                                        <Collapse in={expandedCardId === recipe.recipeId} timeout="auto" unmountOnExit>
+                                            <CardContent>
+                                                <Typography variant="body2" color="text.secondary">
+                                                    {recipe.description}
+                                                </Typography>
+                                                <Typography paragraph>Ingredients:</Typography>
+                                                <ul>
+                                                    {recipe.ingredients.map((ingredient, index) => (
+                                                        <li key={index}>{ingredient}</li>
+                                                    ))}
+                                                </ul>
+                                            </CardContent>
+                                        </Collapse>
+                                        <CardActions disableSpacing>
+                                            <IconButton aria-label="delete" onClick={() => handleDeleteRecipe(recipe.recipeId)}>
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </CardActions>
+                                    </Card>
+                                </Grid>
+                            ))
+                        ) : (
+                            <Grid item xs={12}>
+                                <Typography variant="body1">No saved recipes yet.</Typography>
+                            </Grid>
+                        )}
                     </Grid>
-                ))
-            ) : (
-                <Grid item xs={12}>
-                    <Typography variant="body1">No saved recipes yet.</Typography>
-                </Grid>
-            )}
+                </Box>
+            </Grid>
         </Grid>
     );
 };
 
 export default SavedRecipes;
-
-
-
-
-

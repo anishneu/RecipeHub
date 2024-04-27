@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Typography, Chip, IconButton, Avatar, Button, Modal, TextField } from '@mui/material';
+import { Grid, Typography, Chip, IconButton, Avatar, Button, Modal, Box } from '@mui/material';
 import { Card, CardHeader, CardMedia, CardContent, CardActions } from '@mui/material';
 import { red } from '@mui/material/colors';
 import { MoreVert, Save, Star } from '@mui/icons-material';
@@ -186,7 +186,7 @@ const RecipeList = () => {
     };
 
     return (
-        <Grid container spacing={2} sx={{ padding: '20px' }}>
+        <Grid container spacing={2} sx={{ padding: '30px' }}>
             <Grid item xs={12}>
                 <Typography variant="poster" component="h1" gutterBottom sx={{ textAlign: 'center', color: 'white', marginTop: '30px', marginBottom: '40px' }}>
                     Recipe List
@@ -205,7 +205,15 @@ const RecipeList = () => {
                         variant="outline-secondary"
                         id="button-addon2"
                         onClick={performSearch}
-                        style={{ backgroundColor: '#009688', color: 'white', borderRadius: '0 15px 15px 0'}}
+                        sx={{
+                            backgroundColor: '#009688',
+                            color: 'white',
+                            borderRadius: '0 15px 15px 0',
+                            '&:hover': {
+                                backgroundColor: '#004d40', 
+                                transform: 'scale(1.05)', 
+                            },
+                        }}
                     >
                         Search
                     </Button>
@@ -228,64 +236,70 @@ const RecipeList = () => {
                             label={keyword}
                             onDelete={handleKeywordDelete(keyword)}
                             color="primary"
-                            style={{ margin: '5px', backgroundColor: '' }}
+                            style={{ margin: '5px', backgroundColor: '#66bb6a', color: 'white' }}
                         />
                     ))}
                 </div>
             </Grid>
             {filteredRecipes.length > 0 ? (
-                filteredRecipes.map((recipe) => (
-                    <Grid item xs={12} sm={6} md={4} sx={{ marginBottom: 4 }} key={recipe.recipeId}>
-                        <Card sx={{ maxWidth: 345 }}>
-                            <CardHeader
-                                avatar={
-                                    <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-                                        {recipe.name.charAt(0)}
-                                    </Avatar>
-                                }
-                                action={
-                                    <IconButton aria-label="settings">
-                                        <MoreVert />
-                                    </IconButton>
-                                }
-                                title={recipe.name}
-                                subheader={`Recipe ID: ${recipe.recipeId}`}
-                            />
-                            <CardMedia
-                                component="img"
-                                height="194"
-                                image={`http://localhost:5000/recipe/images/${recipe.creatorId}/${recipe.imagePath}`}
-                                alt={recipe.name}
-                                onClick={() => setExpandedCardId(expandedCardId === recipe.recipeId ? null : recipe.recipeId)}
-                                style={{ cursor: 'pointer' }}
-                            />
-                            <Collapse in={expandedCardId === recipe.recipeId} timeout={300} unmountOnExit>
-                                <CardContent>
-                                    <Typography variant="body2" color="text.secondary">
-                                        {recipe.description}
-                                    </Typography>
-                                    <Typography paragraph>Ingredients:</Typography>
-                                    <ul>
-                                        {recipe.ingredients.map((ingredient, index) => (
-                                            <li key={index}>{ingredient}</li>
-                                        ))}
-                                    </ul>
-                                </CardContent>
-                            </Collapse>
-                            <CardActions disableSpacing>
-                                <IconButton aria-label="save" onClick={() => handleSaveRecipe(recipe.recipeId)}>
-                                    <Save />
-                                </IconButton>
-                                <Typography h5>
-                                        {calculateAverageRating(recipe.ratings)}
-                                </Typography>
-                                <IconButton aria-label="rate" onClick={() => handleOpenRatingModal(recipe)}>
-                                    <Star />
-                                </IconButton>
-                            </CardActions>
-                        </Card>
-                    </Grid>
-                ))
+                <Grid item xs={12}>
+                    <Box bgcolor="#ffe0b2" p={2} borderRadius={7}>
+                        <Grid container spacing={2}>
+                            {filteredRecipes.map((recipe) => (
+                                <Grid item xs={12} sm={6} md={3} key={recipe.recipeId}>
+                                    <Card sx={{ maxWidth: 360, borderRadius: 7 }}>
+                                        <CardHeader
+                                            avatar={
+                                                <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+                                                    {recipe.name.charAt(0)}
+                                                </Avatar>
+                                            }
+                                            action={
+                                                <IconButton aria-label="settings">
+                                                    <MoreVert />
+                                                </IconButton>
+                                            }
+                                            title={recipe.name}
+                                            subheader={`Recipe ID: ${recipe.recipeId}`}
+                                        />
+                                        <CardMedia
+                                            component="img"
+                                            height="195"
+                                            image={`http://localhost:5000/recipe/images/${recipe.creatorId}/${recipe.imagePath}`}
+                                            alt={recipe.name}
+                                            onClick={() => setExpandedCardId(expandedCardId === recipe.recipeId ? null : recipe.recipeId)}
+                                            style={{ cursor: 'pointer' }}
+                                        />
+                                        <Collapse in={expandedCardId === recipe.recipeId} timeout={300} unmountOnExit>
+                                            <CardContent>
+                                                <Typography variant="body2" color="text.secondary">
+                                                    {recipe.description}
+                                                </Typography>
+                                                <Typography paragraph>Ingredients:</Typography>
+                                                <ul>
+                                                    {recipe.ingredients.map((ingredient, index) => (
+                                                        <li key={index}>{ingredient}</li>
+                                                    ))}
+                                                </ul>
+                                            </CardContent>
+                                        </Collapse>
+                                        <CardActions disableSpacing>
+                                            <IconButton aria-label="save" onClick={() => handleSaveRecipe(recipe.recipeId)}>
+                                                <Save />
+                                            </IconButton>
+                                            <Typography h5>
+                                                    {calculateAverageRating(recipe.ratings)}
+                                            </Typography>
+                                            <IconButton aria-label="rate" onClick={() => handleOpenRatingModal(recipe)}>
+                                                <Star />
+                                            </IconButton>
+                                        </CardActions>
+                                    </Card>
+                                </Grid>
+                            ))}
+                        </Grid>
+                    </Box>
+                </Grid>
             ) : (
                 <Grid item xs={12}>
                     <Typography variant="body1">No Recipes match your search criteria.</Typography>
