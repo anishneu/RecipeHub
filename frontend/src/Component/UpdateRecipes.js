@@ -83,12 +83,12 @@ const UpdateRecipes = () => {
         Manage Recipes
       </Typography>
       <Box textAlign="center" ml={4} mr={4}>
-        <Box bgcolor="white" p={4} borderRadius={10} boxShadow={4}>
+        <Box bgcolor="#d1c4e9" p={4} borderRadius={10} boxShadow={4}>
           {loading ? <CircularProgress /> : (
             <Grid container spacing={2}>
               {recipes.map((recipe) => (
                 <Grid item key={recipe._id} xs={12} sm={4} md={4}>
-                  <Card>
+                  <Card sx={{ borderRadius: 7 }}>
                     <CardMedia
                       component="img"
                       height="140"
@@ -99,9 +99,9 @@ const UpdateRecipes = () => {
                       <Typography variant="h5" sx={{ textAlign: 'center', color: 'purple' }}>{recipe.name}</Typography>
                     </CardContent>
                     <CardActions sx={{ justifyContent: 'center', width: '100%' }}>
-                      <Button size="small" onClick={() => handleEdit(recipe.recipeId)}>Edit</Button>
-                      <Box width={2} />
-                      <Button size="small" onClick={() => handleDeleteConfirmation(recipe)}>Delete</Button>
+                      <Button size="small" color="success" onClick={() => handleEdit(recipe.recipeId)} sx={{ width: 'calc(50% - 8px)' }}>Edit</Button>
+                      <Box width={4} />
+                      <Button size="small" color="success" onClick={() => handleDeleteConfirmation(recipe)} sx={{ width: 'calc(50% - 8px)' }}>Delete</Button>
                     </CardActions>
                   </Card>
                 </Grid>
@@ -112,8 +112,8 @@ const UpdateRecipes = () => {
           <Dialog open={deleteConfirmOpen} onClose={() => setDeleteConfirmOpen(false)}>
             <DialogTitle>{"Are you sure you want to delete this recipe?"}</DialogTitle>
             <DialogActions>
-              <Button onClick={() => setDeleteConfirmOpen(false)}>Cancel</Button>
-              <Button onClick={handleDelete} color="primary" autoFocus>Confirm</Button>
+              <Button onClick={() => setDeleteConfirmOpen(false)} color="success">Cancel</Button>
+              <Button onClick={handleDelete} color="success" autoFocus>Confirm</Button>
             </DialogActions>
           </Dialog>
 
@@ -130,5 +130,3 @@ const UpdateRecipes = () => {
 };
 
 export default UpdateRecipes;
-
-

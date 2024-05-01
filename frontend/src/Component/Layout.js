@@ -111,9 +111,7 @@ function Layout() {
 
                             {userType === 'admin' && (
                                 <>
-                                    <Nav.Link as={Link} to="/AllUsers">Users</Nav.Link>
-                                    <Nav.Link as={Link} to="/AllChefs">Chefs</Nav.Link>
-                                    <Nav.Link as={Link} to="/AllRecipes">Recipes</Nav.Link>
+                                    <Nav.Link as={Link} to="/AllPages">Manage</Nav.Link>
                                     <NavDropdown title="MyAccount" id="basic-nav-dropdown">
                                         <NavDropdown.Item as={Link} to="/editprofile">Edit Profile</NavDropdown.Item>
                                         <NavDropdown.Item as={Link} to="/Support">Support</NavDropdown.Item>

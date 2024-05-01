@@ -1,77 +1,152 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Tab, Tabs, Typography, Accordion, AccordionSummary, AccordionDetails, Container } from '@mui/material';
+import { TextField, Button, Grid, Typography, Paper, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import EmailIcon from '@mui/icons-material/Email';
+import axios from 'axios';
+import supimg from '../images/masterpiece.jpg';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const Support = () => {
-  const [tabValue, setTabValue] = useState('1');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    description: '',
+  });
 
   useEffect(() => {
-
-    document.body.style.backgroundColor = '#3f51b5';
+    document.body.style.backgroundColor = '#80deea';
     return () => {
       document.body.style.backgroundColor = '';
     };
   }, []);
 
-  const handleChange = (event, newValue) => {
-    setTabValue(newValue);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('http://localhost:5000/email/send', {
+        recipientEmail: 'cyberzerox27@gmail.com',
+        subject: 'Contact Us Form Submission',
+        text: `Name: ${formData.name}\nEmail: ${formData.email}\nDescription: ${formData.description}`
+      });
+      console.log('Email sent successfully!');
+      setFormData({
+        name: '',
+        email: '',
+        description: '',
+      });
+    } catch (error) {
+      console.error('Error sending email:', error);
+    }
   };
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 10, mb: 4 }}> {/* Changed maxWidth to 'lg' for a larger container */}
-      <Box sx={{ 
-        bgcolor: 'skyblue', 
-        color: 'white', 
-        p: 2, 
-        borderRadius: 2,
-        boxShadow: 1,
-        maxWidth: '100%', // Ensure the Box fills the Container
-      }}>
-        <Tabs
-          value={tabValue}
-          onChange={handleChange}
-          aria-label="Support tabs"
-          textColor="inherit"
-          indicatorColor="secondary"
-          variant="fullWidth" // Makes tabs take up the full container width
-          centered // Centers the tabs
-        >
-          <Tab label="Our Team" value="1" sx={{ width: 'auto' }} />
-          <Tab label="Contact" value="2" sx={{ width: 'auto' }} />
-          <Tab label="FAQ" value="3" sx={{ width: 'auto' }} />
-        </Tabs>
-        {tabValue === '1' && (
-          <Box p={3}>
-            <Typography>Name: Atharva Ajit Waranashiwar | Email: waranashiwar.a@northeastern.edu</Typography>
-            <Typography>Name: Anish Kuila | Email: kuila.a@northeastern.edu</Typography>
-            <Typography>Name: Steffi Gundappa Manhalli | Email: lnu.ste@northeastern.edu</Typography>
-            <Typography>Name: Manikanta Pitchaiah Kapalavai | Email: kapalavai.m@northeastern.edu</Typography>
-          </Box>
-        )}
-        {tabValue === '2' && (
-          <Box p={3}>
-            <Typography>Contact Number: +1 (617)7654-321</Typography>
-          </Box>
-        )}
-        {tabValue === '3' && (
-          <Box p={3}>
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
-                <Typography>Why choose us?</Typography>
+    <div style={{ padding: 20 }}>
+      <Grid container spacing={4}>
+        {/* Contact Form */}
+        <Grid item xs={12} md={6}>
+          <Paper style={{ padding: 20, borderRadius: 15 }}>
+            <Typography variant="poster" component="h2" align="center" gutterBottom>
+              Contact Us
+            </Typography>
+            <form onSubmit={handleSubmit}>
+              <TextField
+                fullWidth
+                label="Name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                margin="normal"
+                required
+              />
+              <TextField
+                fullWidth
+                label="Email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                margin="normal"
+                required
+              />
+              <TextField
+                fullWidth
+                label="Description"
+                name="description"
+                multiline
+                rows={4}
+                value={formData.description}
+                onChange={handleChange}
+                margin="normal"
+                required
+              />
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                startIcon={<EmailIcon />}
+                style={{ marginTop: 20, backgroundColor: 'green', transition: 'background-color 0.3s, transform 0.3s', transform: 'scale(1.1)', '&:hover': { backgroundColor: 'darkgreen', transform: 'scale(1.1)' } }}
+              >
+                Send
+              </Button>
+            </form>
+          </Paper>
+        </Grid>
+        
+        {/* Image */}
+        <Grid item xs={12} md={6}>
+          <img src={supimg} alt="Support" style={{ width: '100%', maxHeight: '63vh', borderRadius: 15 }} />
+        </Grid>
+        
+        {/* Call Me Box */}
+        <Grid item xs={12} md={6}>
+          <Paper style={{ padding: 20, borderRadius: 15 }}>
+            <Typography variant="poster" component="h2" align="center" gutterBottom>
+              Call
+            </Typography>
+            <Typography variant="body1" align="center">
+              Phone Number: +(617)765-4321 {/* Replace with a random phone number */}
+            </Typography>
+          </Paper>
+        </Grid>
+        
+        {/* FAQ */}
+        <Grid item xs={12}>
+          <Paper style={{ padding: 20 }}>
+            <Typography variant="poster" component="h2" align="center" gutterBottom>
+              FAQ
+            </Typography>
+            <Accordion style={{ marginBottom: 20, backgroundColor: '#00acc1', color: 'white' }}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon style={{ color: 'white' }} />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography variant="h6">Why choose us?</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <Typography>
-                    Choose Recipe Hub for its diverse, quality recipes, user-friendly interface, and vibrant community. With personalized experiences and constant 
-                    updates, Recipe Hub is your ultimate destination for culinary exploration.
+                <Typography variant="body1">
+                  Choose Recipe Hub for its diverse, quality recipes, user-friendly interface, and vibrant community. With personalized experiences and constant 
+                  updates, Recipe Hub is your ultimate destination for culinary exploration.
                 </Typography>
               </AccordionDetails>
             </Accordion>
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel2a-content" id="panel2a-header">
-                <Typography>How do I get started?</Typography>
+            <Accordion style={{ backgroundColor: '#00acc1', color: 'white' }}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon style={{ color: 'white' }} />}
+                aria-controls="panel2a-content"
+                id="panel2a-header"
+              >
+                <Typography variant="h6">How do I get started?</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <Typography>
+                <Typography variant="body1">
                     Getting started with Recipe Hub is effortless. Simply sign up, explore our diverse collection of recipes, and save your favorites for later. 
                     You can even contribute your own recipes and engage with a vibrant community of food enthusiasts. Choose Recipe Hub for its user-friendly interface, 
                     quality recipes, and personalized experience. With constant updates and a commitment to culinary excellence, Recipe Hub is your go-to destination for 
@@ -79,10 +154,10 @@ const Support = () => {
                 </Typography>
               </AccordionDetails>
             </Accordion>
-          </Box>
-        )}
-      </Box>
-    </Container>
+          </Paper>
+        </Grid>
+      </Grid>
+    </div>
   );
 };
 

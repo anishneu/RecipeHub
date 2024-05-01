@@ -18,6 +18,14 @@ const EditRecipe = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
+
+    document.body.style.backgroundColor = '#d7ccc8';
+    return () => {
+      document.body.style.backgroundColor = '';
+    };
+  }, []);
+
+  useEffect(() => {
     const fetchRecipe = async () => {
       setLoading(true);
       try {
@@ -62,8 +70,16 @@ const EditRecipe = () => {
 
   return (
     <Container component="main" maxWidth="sm">
-      <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-        <Typography variant="poster" component="h1" gutterBottom sx={{ textAlign: 'center', color: 'green', marginTop: '60px', marginBottom: '40px' }}>
+      <Box
+        sx={{
+          marginTop: 5,
+          padding: 3,
+          borderRadius: 4,
+          backgroundColor: 'white',
+          boxShadow: 4,
+        }}
+      >
+        <Typography variant="poster" component="h1" gutterBottom sx={{ textAlign: 'center', color: '#2e7d32', marginTop: '60px', marginBottom: '40px' }}>
             Edit Recipe
         </Typography>
         {/* Input fields for recipe details */}
@@ -104,7 +120,8 @@ const EditRecipe = () => {
           type="submit"
           fullWidth
           variant="contained"
-          sx={{ mt: 3, mb: 2, backgroundColor: "green"}}
+          sx={{ mt: 3, mb: 2, backgroundColor: "#8d6e63", '&:hover': { backgroundColor: '#388e3c' }}}
+          onClick={handleSubmit}
         >
           Update
         </Button>
@@ -119,3 +136,4 @@ const EditRecipe = () => {
 };
 
 export default EditRecipe;
+

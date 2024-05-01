@@ -8,13 +8,13 @@ async function sendEmail(email, subject, text) {
         port: 465,
         secure: true,
         auth: {
-          user: "waranashiwaratharva@gmail.com",
-          pass: "fuzl tljs rknk mcyx",
+          user: "cyberzerox27@gmail.com",
+          pass: "ppxz bfaq rcns avbn",
         },
       });
 
     const mailOptions = {
-      from: 'waranashiwaratharva@gmail.com',
+      from: 'cyberzerox27@gmail.com',
       to: email,
       subject: subject,
       text: text

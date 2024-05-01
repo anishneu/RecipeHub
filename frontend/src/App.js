@@ -17,9 +17,7 @@ import EditProfile from './Component/editProfile';
 import UpdateRecipes from './Component/UpdateRecipes';
 import About from './Component/About';
 import Support from './Component/Support';
-import AllUsers from './Component/AllUsers';
-import AllChefs from './Component/AllChefs';
-import AllRecipes from './Component/AllRecipes';
+import AllPages from './Component/AllPages';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Routes, Route,Navigate } from "react-router-dom";
 import { loginSuccess, logout } from './actions/authActions';
@@ -68,9 +66,7 @@ function App({ loggedIn, userType, loginSuccess, logout }) {
           <Route path="/UpdateRecipes" element={loggedIn && userType === "chef"?<UpdateRecipes />:<Navigate to="/" />} />
           <Route path="/editRecipe/:id" element={loggedIn && userType === "chef"?<EditRecipe />:<Navigate to="/" />} />
           <Route path="/Support" element={loggedIn?<Support />:<Navigate to="/" />} />
-          <Route path="/AllUsers" element={loggedIn && userType === "admin"?<AllUsers />:<Navigate to="/" />} />
-          <Route path="/AllChefs" element={loggedIn && userType === "admin"?<AllChefs />:<Navigate to="/" />} />
-          <Route path="/AllRecipes" element={loggedIn && userType === "admin"?<AllRecipes />:<Navigate to="/" />} />
+          <Route path="/AllPages" element={loggedIn && userType === "admin"?<AllPages />:<Navigate to="/" />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/Register" element={<Register />} />
         </Route>
