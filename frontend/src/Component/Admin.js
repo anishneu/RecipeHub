@@ -6,7 +6,7 @@ const Admin = () => {
 
   useEffect(() => {
 
-    document.body.style.backgroundColor = '#e57373';
+    document.body.style.backgroundColor = '#c5e1a5';
     return () => {
       document.body.style.backgroundColor = '';
     };
@@ -23,7 +23,7 @@ const Admin = () => {
           fontSize: '4rem',
           mt: 30,
           mb: 5,
-          color: 'white',
+          color: '#33691e',
         }}
       >
         Greetings Admin!

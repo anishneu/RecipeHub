@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 
 const AboutPage = () => {
   return (
-    <Box sx={{ backgroundColor: '#e1bee7', minHeight: '95vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+    <Box sx={{ backgroundColor: '#e57373', minHeight: '95vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <Container>
         <Box sx={{ backgroundColor: 'white', padding: '20px', borderRadius: '8px' }}>
-          <Typography variant="poster" component="h1" gutterBottom sx={{ textAlign: 'center', color: '#ba68c8', marginTop: '30px', marginBottom: '40px' }}>
+          <Typography variant="poster" component="h1" gutterBottom sx={{ textAlign: 'center', color: '#c62828', marginTop: '30px', marginBottom: '40px' }}>
             About Us
           </Typography>
           <Typography variant="body1" sx={{marginBottom: '30px'}} paragraph>
@@ -29,8 +29,8 @@ const AboutPage = () => {
               margin: '0 auto',
               width: '200px',
               textAlign: 'center',
-              bgcolor: '#ba68c8',
-              '&:hover': { bgcolor: '#ab47bc' }
+              bgcolor: '#e53935',
+              '&:hover': { bgcolor: '#c62828' }
             }}
           >
             Go Back to Home

@@ -13,7 +13,7 @@ const Support = () => {
   });
 
   useEffect(() => {
-    document.body.style.backgroundColor = '#80deea';
+    document.body.style.backgroundColor = '#9fa8da';
     return () => {
       document.body.style.backgroundColor = '';
     };
@@ -118,11 +118,11 @@ const Support = () => {
         
         {/* FAQ */}
         <Grid item xs={12}>
-          <Paper style={{ padding: 20 }}>
+          <Paper style={{ padding: 20, borderRadius: 15 }}>
             <Typography variant="poster" component="h2" align="center" gutterBottom>
               FAQ
             </Typography>
-            <Accordion style={{ marginBottom: 20, backgroundColor: '#00acc1', color: 'white' }}>
+            <Accordion style={{ marginBottom: 20, backgroundColor: 'green', color: 'white' }}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon style={{ color: 'white' }} />}
                 aria-controls="panel1a-content"
@@ -137,7 +137,7 @@ const Support = () => {
                 </Typography>
               </AccordionDetails>
             </Accordion>
-            <Accordion style={{ backgroundColor: '#00acc1', color: 'white' }}>
+            <Accordion style={{ backgroundColor: 'green', color: 'white' }}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon style={{ color: 'white' }} />}
                 aria-controls="panel2a-content"

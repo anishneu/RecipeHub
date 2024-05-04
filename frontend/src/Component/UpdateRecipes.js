@@ -17,7 +17,7 @@ const UpdateRecipes = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    document.body.style.backgroundColor = '#9575cd';
+    document.body.style.backgroundColor = '#b39ddb';
     return () => {
       document.body.style.backgroundColor = '';
     };

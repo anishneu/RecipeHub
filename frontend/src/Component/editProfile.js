@@ -79,7 +79,7 @@ const Update = () => {
                         padding: '40px',
                     }}
                 >
-                    <Typography variant="h5" component="h1" gutterBottom sx={{ textAlign: 'center', color: 'green', marginBottom: '40px' }}>
+                    <Typography variant="poster" component="h1" gutterBottom sx={{ textAlign: 'center', color: 'black', marginTop: '40px', marginBottom: '40px' }}>
                         Update Profile
                     </Typography>
                     <form onSubmit={handleSubmit} noValidate>

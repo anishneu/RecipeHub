@@ -9,7 +9,7 @@ const SavedRecipes = () => {
     const [expandedCardId, setExpandedCardId] = useState(null);
 
     useEffect(() => {
-        document.body.style.backgroundColor = '#ffd54f';
+        document.body.style.backgroundColor = '#ffb74d';
         return () => {
             document.body.style.backgroundColor = '';
         };
@@ -56,7 +56,7 @@ const SavedRecipes = () => {
                 </Typography>
             </Grid>
             <Grid item xs={12}>
-                <Box bgcolor="#fff9c4" p={2} borderRadius={5}>
+                <Box bgcolor="#ffe0b2" p={2} borderRadius={5}>
                     <Grid container spacing={2}>
                         {savedRecipes.length > 0 ? (
                             savedRecipes.map((recipe) => (

@@ -6,7 +6,7 @@ const Chef = () => {
 
   useEffect(() => {
 
-    document.body.style.backgroundColor = '#e57373';
+    document.body.style.backgroundColor = '#b39ddb';
     return () => {
       document.body.style.backgroundColor = '';
     };
@@ -23,7 +23,7 @@ const Chef = () => {
           fontSize: '4rem',
           mt: 30,
           mb: 5,
-          color: 'white',
+          color: '#673ab7',
         }}
       >
         Greetings Chef!

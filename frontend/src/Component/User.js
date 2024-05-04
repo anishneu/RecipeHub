@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 const User = () => {
   useEffect(() => {
 
-    document.body.style.backgroundColor = '#e57373';
+    document.body.style.backgroundColor = '#ffb74d';
     return () => {
       document.body.style.backgroundColor = '';
     };
@@ -21,7 +21,7 @@ const User = () => {
           fontSize: '4rem',
           mt: 30,
           mb: 5,
-          color: 'white',
+          color: '#ef6c00',
         }}
       >
         Greetings User!

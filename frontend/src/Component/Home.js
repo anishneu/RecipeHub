@@ -200,7 +200,7 @@ const Home = () => {
               fontSize: '2.5rem',
               mb: 5,
               mt: 3,
-              color: '#f44336',
+              color: '#c62828',
             }}
           >
             Meet Our Team

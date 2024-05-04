@@ -79,7 +79,7 @@ const EditRecipe = () => {
           boxShadow: 4,
         }}
       >
-        <Typography variant="poster" component="h1" gutterBottom sx={{ textAlign: 'center', color: '#2e7d32', marginTop: '60px', marginBottom: '40px' }}>
+        <Typography variant="poster" component="h1" gutterBottom sx={{ textAlign: 'center', color: 'black', marginTop: '60px', marginBottom: '40px' }}>
             Edit Recipe
         </Typography>
         {/* Input fields for recipe details */}
@@ -120,7 +120,7 @@ const EditRecipe = () => {
           type="submit"
           fullWidth
           variant="contained"
-          sx={{ mt: 3, mb: 2, backgroundColor: "#8d6e63", '&:hover': { backgroundColor: '#388e3c' }}}
+          sx={{ mt: 3, mb: 2, backgroundColor: "success.main", '&:hover': { backgroundColor: 'darkgreen' }}}
           onClick={handleSubmit}
         >
           Update

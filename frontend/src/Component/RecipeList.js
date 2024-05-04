@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Typography, Chip, IconButton, Avatar, Button, Modal, Box } from '@mui/material';
+import { Grid, Typography, Chip, IconButton, Avatar, Button, Modal, Box, Snackbar } from '@mui/material';
 import { Card, CardHeader, CardMedia, CardContent, CardActions } from '@mui/material';
-import { red } from '@mui/material/colors';
-import { MoreVert, Save, Star } from '@mui/icons-material';
+import { green } from '@mui/material/colors';
+import { MoreVert, Save, Star, CheckCircle } from '@mui/icons-material';
 import axios from 'axios';
 import { FormControl, InputGroup, Collapse } from 'react-bootstrap';
-import Rating from '@mui/material/Rating'; 
+import Rating from '@mui/material/Rating';
 
 const RecipeList = () => {
     const [inputValue, setInputValue] = useState('');
@@ -18,6 +18,7 @@ const RecipeList = () => {
     const [selectedRecipe, setSelectedRecipe] = useState(null);
     const [rating, setRating] = useState('');
     const [showRatingModal, setShowRatingModal] = useState(false);
+    const [savedMessage, setSavedMessage] = useState('');
 
     useEffect(() => {
         fetchRecipes();
@@ -137,6 +138,7 @@ const RecipeList = () => {
             console.log('Saving recipe for user ID:', userId);
             const response = await axios.post(`http://localhost:5000/user/saveRecipe/${userId}`, { recipeId });
             console.log("Save recipe response:", response.data);
+            setSavedMessage('Recipe has been saved');
         } catch (error) {
             console.error('Error saving recipe:', error);
         }
@@ -174,14 +176,14 @@ const RecipeList = () => {
     };
     const calculateAverageRating = (ratings) => {
         if (ratings.length === 0) {
-          return 4.2; // Default rating if no ratings are available
+            return 4.2; // Default rating if no ratings are available
         }
-      
+
         const total = ratings.reduce((acc, curr) => acc + curr, 0);
         if (total === 0) {
-          return 4.2; // Default rating if the total is zero
+            return 4.2; // Default rating if the total is zero
         }
-      
+
         return (total / ratings.length).toFixed(1); // One decimal place
     };
 
@@ -199,7 +201,7 @@ const RecipeList = () => {
                         value={inputValue}
                         onChange={handleInputChange}
                         onKeyDown={handleInputKeyDown}
-                        style={{ borderRadius: '15px 0 0 15px', width: 'calc(100% - 130px)', height: '100%'}}
+                        style={{ borderRadius: '15px 0 0 15px', width: 'calc(100% - 130px)', height: '100%' }}
                     />
                     <Button
                         variant="outline-secondary"
@@ -210,8 +212,8 @@ const RecipeList = () => {
                             color: 'white',
                             borderRadius: '0 15px 15px 0',
                             '&:hover': {
-                                backgroundColor: '#004d40', 
-                                transform: 'scale(1.05)', 
+                                backgroundColor: '#004d40',
+                                transform: 'scale(1.05)',
                             },
                         }}
                     >
@@ -250,7 +252,7 @@ const RecipeList = () => {
                                     <Card sx={{ maxWidth: 360, borderRadius: 7 }}>
                                         <CardHeader
                                             avatar={
-                                                <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+                                                <Avatar sx={{ bgcolor: '#ef6c00' }} aria-label="recipe">
                                                     {recipe.name.charAt(0)}
                                                 </Avatar>
                                             }
@@ -288,7 +290,7 @@ const RecipeList = () => {
                                                 <Save />
                                             </IconButton>
                                             <Typography h5>
-                                                    {calculateAverageRating(recipe.ratings)}
+                                                {calculateAverageRating(recipe.ratings)}
                                             </Typography>
                                             <IconButton aria-label="rate" onClick={() => handleOpenRatingModal(recipe)}>
                                                 <Star />
@@ -324,9 +326,44 @@ const RecipeList = () => {
                         onChange={handleRatingChange}
                     />
                     <br></br>
-                    <Button variant="contained" onClick={() => handleRateRecipe(rating)} sx={{ marginLeft: '20px' }}>Submit</Button>
+                    <Button
+                        variant="contained"
+                        onClick={() => handleRateRecipe(rating)}
+                        sx={{
+                            marginLeft: '20px',
+                            backgroundColor: 'green',
+                            '&:hover': {
+                                backgroundColor: 'darkgreen',
+                                transform: 'scale(1)',
+                            },
+                        }}
+                    >
+                        Submit
+                    </Button>
                 </div>
             </Modal>
+
+            {/* Saved Message Snackbar */}
+            <Snackbar
+                open={!!savedMessage}
+                autoHideDuration={3000}
+                onClose={() => setSavedMessage('')}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Box
+                    sx={{
+                        backgroundColor: green[600],
+                        color: '#fff',
+                        borderRadius: '10px',
+                        padding: '10px 20px',
+                        display: 'flex',
+                        alignItems: 'center',
+                    }}
+                >
+                    <CheckCircle sx={{ marginRight: '10px' }} />
+                    {savedMessage}
+                </Box>
+            </Snackbar>
         </Grid>
     );
 };

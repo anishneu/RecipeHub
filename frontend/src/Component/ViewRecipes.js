@@ -108,7 +108,7 @@ const ViewRecipes = () => {
           {error}
         </Typography>
       ) : recipes.length > 0 ? (
-        <Box bgcolor="#f3e5f5" p={2} borderRadius={7}>
+        <Box bgcolor="#d1c4e9" p={2} borderRadius={7}>
           <Grid container spacing={2}>
             {recipes.map((recipe) => (
               <Grid item xs={12} key={recipe._id}>
