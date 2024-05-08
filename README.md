@@ -30,6 +30,7 @@ Recipe Hub is a comprehensive digital platform designed to facilitate easy manag
 
 - **Manage All Users**: Admins can view all user profiles, make edits to user roles (e.g., upgrading a user to a chef), and handle account activations or suspensions.
 - **Manage All Recipes**: Provides a dashboard to oversee all submitted recipes, approve new entries, edit content for clarity or completeness, or remove recipes if necessary.
+- **News**: The Admin has the ability to post any news or updates even Events which can be viewed by both the user and chef.
 
 ## User Interface
 
@@ -59,6 +60,7 @@ Recipe Hub is a comprehensive digital platform designed to facilitate easy manag
   - Has all privileges of general users and chefs
   - Can edit or delete any recipes
   - Can manage user accounts and roles
+  - Can post News and updates across the platform
 
 ### Authentication and Security
 
