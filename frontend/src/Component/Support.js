@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { TextField, Button, Grid, Typography, Paper, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import axios from 'axios';
-import supimg from '../images/masterpiece.jpg';
+import supimg from '../images/support.webp';
+import food from '../images/food.webp';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const Support = () => {
@@ -32,8 +33,8 @@ const Support = () => {
     try {
       await axios.post('http://localhost:5000/email/send', {
         recipientEmail: 'cyberzerox27@gmail.com',
-        subject: 'Contact Us Form Submission',
-        text: `Name: ${formData.name}\nEmail: ${formData.email}\nDescription: ${formData.description}`
+        subject: 'Recipe Hub - Contact Us',
+        text: `Hello Recipe Hub Team,\nBelow is a message sent by ${formData.name} with email id - ${formData.email}\n\n**${formData.description}**`
       });
       console.log('Email sent successfully!');
       setFormData({
@@ -103,26 +104,19 @@ const Support = () => {
         <Grid item xs={12} md={6}>
           <img src={supimg} alt="Support" style={{ width: '100%', maxHeight: '63vh', borderRadius: 15 }} />
         </Grid>
-        
-        {/* Call Me Box */}
+
         <Grid item xs={12} md={6}>
-          <Paper style={{ padding: 20, borderRadius: 15 }}>
-            <Typography variant="poster" component="h2" align="center" gutterBottom>
-              Call
-            </Typography>
-            <Typography variant="body1" align="center">
-              Phone Number: +(617)765-4321 {/* Replace with a random phone number */}
-            </Typography>
-          </Paper>
+          <img src={food} alt="Food" style={{ width: '100%', maxHeight: '63vh', borderRadius: 15 }} />
         </Grid>
         
+        
         {/* FAQ */}
-        <Grid item xs={12}>
+        <Grid item xs={12} md={6}>
           <Paper style={{ padding: 20, borderRadius: 15 }}>
             <Typography variant="poster" component="h2" align="center" gutterBottom>
               FAQ
             </Typography>
-            <Accordion style={{ marginBottom: 20, backgroundColor: 'green', color: 'white' }}>
+            <Accordion style={{ marginBottom: 20, backgroundColor: '#009688', color: 'white' }}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon style={{ color: 'white' }} />}
                 aria-controls="panel1a-content"
@@ -137,7 +131,7 @@ const Support = () => {
                 </Typography>
               </AccordionDetails>
             </Accordion>
-            <Accordion style={{ backgroundColor: 'green', color: 'white' }}>
+            <Accordion style={{ backgroundColor: '#009688', color: 'white' }}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon style={{ color: 'white' }} />}
                 aria-controls="panel2a-content"
@@ -156,9 +150,22 @@ const Support = () => {
             </Accordion>
           </Paper>
         </Grid>
+
+        {/* Call Me Box */}
+        <Grid item xs={12} md={6}>
+          <Paper style={{ padding: 20, borderRadius: 15 }}>
+            <Typography variant="poster" component="h2" align="center" gutterBottom>
+              Call
+            </Typography>
+            <Typography variant="body1" align="center">
+              Phone Number: +(617)765-4321 {/* Replace with a random phone number */}
+            </Typography>
+          </Paper>
+        </Grid>
       </Grid>
     </div>
   );
 };
 
 export default Support;
+

@@ -1,0 +1,15 @@
+[{
+    "newsId": 1,
+    "title": "Backend title 1",
+    "description": "Backend description 1"
+},
+{
+    "newsId": 2,
+    "title": "Backend title 2",
+    "description": "Backend description 2"
+},
+{
+    "newsId": 3,
+    "title": "Backend title 3",
+    "description": "Backend description 3"
+}]

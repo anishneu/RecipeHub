@@ -18,6 +18,8 @@ import UpdateRecipes from './Component/UpdateRecipes';
 import About from './Component/About';
 import Support from './Component/Support';
 import AllPages from './Component/AllPages';
+import News from './Component/News';
+import ViewNews from './Component/ViewNews';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Routes, Route,Navigate } from "react-router-dom";
 import { loginSuccess, logout } from './actions/authActions';
@@ -67,6 +69,8 @@ function App({ loggedIn, userType, loginSuccess, logout }) {
           <Route path="/editRecipe/:id" element={loggedIn && userType === "chef"?<EditRecipe />:<Navigate to="/" />} />
           <Route path="/Support" element={loggedIn?<Support />:<Navigate to="/" />} />
           <Route path="/AllPages" element={loggedIn && userType === "admin"?<AllPages />:<Navigate to="/" />} />
+          <Route path="/News" element={loggedIn && userType === "admin"?<News />:<Navigate to="/" />} />
+          <Route path="/ViewNews" element={loggedIn?<ViewNews />:<Navigate to="/" />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/Register" element={<Register />} />
         </Route>

@@ -6,6 +6,7 @@ const path = require("path");
 const userRoutes = require(path.join(__dirname,'routes','userRoutes'));
 const recipeRoutes = require(path.join(__dirname,'routes','recipeRoutes'));
 const emailRoutes = require(path.join(__dirname,'routes','emailRoutes'));
+const newsRoutes = require(path.join(__dirname,'routes','newsRoutes'));
 const cors = require('cors');
 
 dotenv.config();
@@ -30,6 +31,7 @@ mongoose.connect(process.env.MONGODB_URI, {
 app.use('/user', userRoutes);
 app.use('/recipe',recipeRoutes);
 app.use('/email', emailRoutes);
+app.use('/news', newsRoutes);
 
 app.use('/images', express.static(path.join(__dirname,'..','images'))); // added for images
 

@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import { jwtDecode } from 'jwt-decode'; 
+//import { jwtDecode } from 'jwt-decode'; 
 import { Outlet } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
 import { logout } from '../actions/authActions'; // Import logout action
-
+/*
 const getUserRoleFromToken = () => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -21,7 +21,7 @@ const getUserRoleFromToken = () => {
         }
     }
     return null;
-};
+};*/
 
 function Layout() {
     // const [userRole, setUserRole] = useState(getUserRoleFromToken());
@@ -89,6 +89,7 @@ function Layout() {
                                     <Nav.Link as={Link} to="/UpdateRecipes">Manage</Nav.Link>
                                     <NavDropdown title="MyAccount" id="basic-nav-dropdown">
                                         <NavDropdown.Item as={Link} to="/editprofile">Edit Profile</NavDropdown.Item>
+                                        <NavDropdown.Item as={Link} to="/ViewNews">News & Updates</NavDropdown.Item>
                                         <NavDropdown.Item as={Link} to="/Support">Support</NavDropdown.Item>
                                         <NavDropdown.Divider />
                                         <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
@@ -102,6 +103,7 @@ function Layout() {
                                     <Nav.Link as={Link} to="SavedRecipes">Favourites</Nav.Link>
                                     <NavDropdown title="MyAccount" id="basic-nav-dropdown">
                                         <NavDropdown.Item as={Link} to="/editprofile">Edit Profile</NavDropdown.Item>
+                                        <NavDropdown.Item as={Link} to="/ViewNews">News & Updates</NavDropdown.Item>
                                         <NavDropdown.Item as={Link} to="/Support">Support</NavDropdown.Item>
                                         <NavDropdown.Divider />
                                         <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
@@ -112,6 +114,7 @@ function Layout() {
                             {userType === 'admin' && (
                                 <>
                                     <Nav.Link as={Link} to="/AllPages">Manage</Nav.Link>
+                                    <Nav.Link as={Link} to="/News">News</Nav.Link>
                                     <NavDropdown title="MyAccount" id="basic-nav-dropdown">
                                         <NavDropdown.Item as={Link} to="/editprofile">Edit Profile</NavDropdown.Item>
                                         <NavDropdown.Item as={Link} to="/Support">Support</NavDropdown.Item>
