@@ -23,20 +23,65 @@ const News = () => {
     }
   };
 
+  const renderSnowflakes = () => {
+    const snowflakes = [];
+    for (let i = 0; i < 100; i++) {
+      const size = `${Math.random() * 10 + 2}px`;
+      const style = {
+        left: `${Math.random() * 100}vw`,
+        width: size,
+        height: size,
+        backgroundColor: 'white',
+        borderRadius: '50%',
+        opacity: 0.8,
+        position: 'absolute',
+        top: '-10px',
+        pointerEvents: 'none',
+        animation: `snowfall ${Math.random() * 5 + 5}s linear ${Math.random() * 2}s infinite`
+      };
+      snowflakes.push(<Box key={i} sx={style} />);
+    }
+    return snowflakes;
+  };
+
   return (
     <Box
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        minHeight: '92.2vh', // Set minimum height to full viewport height
+        minHeight: '92.2vh',
         backgroundImage: `url(${newsImg})`,
         backgroundSize: 'cover',
-        backgroundPosition: 'center', // Center the background image
-        position: 'relative'
+        backgroundPosition: 'center',
+        position: 'relative',
+        overflow: 'hidden',
+        '@keyframes snowfall': {
+          '0%': { transform: 'translateY(0)' },
+          '100%': { transform: 'translateY(100vh)' }
+        },
+        '@keyframes fadeInScale': {
+          '0%': { opacity: 0, transform: 'scale(0.9)' },
+          '100%': { opacity: 1, transform: 'scale(1)' }
+        }
       }}
     >
+      {/* Snowfall container */}
+      {renderSnowflakes()}
+
       {/* Section Above with Image Background */}
-      <Typography variant="poster" component="h1" gutterBottom sx={{ textAlign: 'left', color: 'white', marginTop: '80px', marginLeft: '90px', fontSize: '3rem' }}>
+      <Typography 
+        variant="h1" 
+        component="h1" 
+        gutterBottom 
+        sx={{ 
+          textAlign: 'left', 
+          color: 'white', 
+          marginTop: '80px', 
+          marginLeft: '90px', 
+          fontSize: '3rem',
+          animation: 'fadeInScale 2s ease-out'
+        }}
+      >
         Welcome to News!
       </Typography>
 
@@ -68,10 +113,10 @@ const News = () => {
             <Button
               type="submit"
               variant="contained"
-              color="success" // Change color to green
+              color="success"
               fullWidth
               size="large"
-              sx={{ mt: 2, '&:hover': { bgcolor: 'darkgreen' }, borderRadius: '8px', marginBottom: '10px' }} // Change hover color to dark green
+              sx={{ mt: 2, '&:hover': { bgcolor: 'darkgreen' }, borderRadius: '8px', marginBottom: '10px' }}
             >
               Send
             </Button>
@@ -88,7 +133,7 @@ const News = () => {
       >
         <Box
           sx={{
-            backgroundColor: green[600], // Use green color
+            backgroundColor: green[600],
             color: '#fff',
             borderRadius: '10px',
             padding: '10px 20px',

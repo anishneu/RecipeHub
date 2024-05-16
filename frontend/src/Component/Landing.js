@@ -3,6 +3,7 @@ import mainCookImage from '../images/cook.png';
 import biryani from '../images/biriyani.jpg';
 import burger from '../images/burger.avif';
 import pizza from '../images/pizza.avif';
+import leafImage from '../images/maple.png';
 import { Link } from 'react-router-dom';
 import { Fade, Typography, Button, Box, Grid } from '@mui/material';
 import FacebookIcon from '@mui/icons-material/Facebook';
@@ -14,10 +15,10 @@ const StyledButton = styled(Button)({
   backgroundColor: '#7c4dff',
   color: 'white',
   marginTop: '20px',
-  transition: 'transform 0.3s ease', // Added transition for smooth scaling
+  transition: 'transform 0.3s ease',
   '&:hover': {
     backgroundColor: '#5d2eaa',
-    transform: 'scale(1.1)', // Scales up the button on hover
+    transform: 'scale(1.1)',
   },
 });
 
@@ -28,11 +29,31 @@ const Card = styled('div')({
   borderRadius: '10px',
   overflow: 'hidden',
   boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-  transition: 'transform 0.3s ease', // Added transition for smooth scaling
+  transition: 'transform 0.3s ease',
   '&:hover': {
-    transform: 'scale(1.05)', // Scales up the card on hover
+    transform: 'scale(1.05)',
   },
 });
+
+const renderLeaves = () => {
+  const leaves = [];
+  for (let i = 0; i < 20; i++) {
+    const size = `${Math.random() * 40 + 20}px`; // Increased size range
+    const style = {
+      left: `${Math.random() * 100}vw`,
+      width: size,
+      height: size,
+      position: 'absolute',
+      top: '-20px',
+      pointerEvents: 'none',
+      animation: `float ${Math.random() * 5 + 5}s linear ${Math.random() * 2}s infinite`,
+      opacity: 0.8,
+      background: `url(${leafImage}) no-repeat center/contain`,
+    };
+    leaves.push(<Box key={i} sx={style} />);
+  }
+  return leaves;
+};
 
 const Landing = () => {
   const items = [
@@ -58,11 +79,12 @@ const Landing = () => {
             to="/Home"
             variant="contained"
             size="large"
-            sx={{borderRadius: '10px'}}
+            sx={{ borderRadius: '10px' }}
           >
             Get Started
           </StyledButton>
         </div>
+        {renderLeaves()}
       </section>
 
       {/* Cards Section */}
@@ -98,12 +120,20 @@ const Landing = () => {
           </a>
         </Grid>
       </Box>
+
+      <style jsx>{`
+        @keyframes float {
+          0% {
+            transform: translateY(0);
+          }
+          100% {
+            transform: translateY(100vh);
+          }
+        }
+      `}</style>
     </div>
   );
 };
 
 export default Landing;
-
-
-
 
