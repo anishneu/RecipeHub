@@ -1,115 +1,120 @@
-# Recipe Hub Project README
+# Recipe Hub
 
-Greetings! This project is a continuation of the Final Web Design Project at Northeastern University.
+Full-stack, role-based recipe discovery and publishing platform.
 
-## Project Overview
+Recipe Hub lets three kinds of users — general users, chefs, and admins — interact with a shared recipe catalog differently: general users discover and save recipes, chefs publish and manage their own, and the platform layers in live culinary news alongside seasonal UI theming. The API is documented with Swagger rather than left for the frontend to reverse-engineer, and auth is JWT-based with bcrypt-hashed credentials rather than rolled by hand.
 
-Recipe Hub is a comprehensive digital platform designed to facilitate easy management, sharing, and discovery of recipes. It catifies to three distinct roles: Admin, Chef, and General User, each with tailored functionalities and interfaces to enhance their culinary and management experiences.
+**Stack:** React 18 · Node.js / Express · MongoDB (Mongoose) · JWT auth
+**Author:** Anish Kuila
+**Status:** Feature-complete, not currently deployed live
 
-## System Features
+## Table of contents
+- [What it does](#what-it-does)
+- [Architecture](#architecture)
+- [Scale](#scale)
+- [Install](#install)
+- [Quickstart](#quickstart)
+- [Project structure](#project-structure)
+- [API reference](#api-reference)
+- [Limitations](#limitations)
 
-### Common Features Across All Roles
+## What it does
 
-- **Home Page**: Provides a general overview and latest updates or features.
-- **About Page**: Details about the Recipe Hub, its mission, and the team behind it.
-- **Support Page**: Offers support resources, FAQs, and contact information for user assistance.
+```
+Client (React) ──▶ [Express API] ──▶ [MongoDB]
+                        │
+        ┌───────────────┼───────────────┬───────────────┐
+        ▼               ▼               ▼               ▼
+    User/Auth        Recipe CRUD     News Feed        Email
+  (JWT, bcrypt)   (tags, ratings,   (culinary          (Nodemailer)
+                   ingredient        updates)
+                   search)
+```
 
-### Specific Features By Role
+Recipes can be queried by tag, by ingredient list, or by minimum rating — not just fetched wholesale and filtered client-side. Ratings are stored per-recipe and aggregated server-side. Saved recipes are tracked per-user for a personal collection view.
 
-#### General Users
+## Architecture
 
-- **Recipe List (with filters)**: Users can browse the recipe database using filters like ingredients, preparation time, cuisine, and more, to find recipes that match their preferences.
-- **Saved Recipes**: A personal space for users to save their favorite recipes and access them quickly anytime.
+| Layer | Technology |
+|---|---|
+| Frontend | React 18, Redux, Chakra UI, MUI, Bootstrap, Framer Motion |
+| Backend | Express 4, Mongoose (MongoDB ODM) |
+| Auth | JWT (jsonwebtoken) + bcrypt password hashing |
+| Validation | express-validator |
+| Docs | swagger-jsdoc + swagger-ui-express |
+| Email | Nodemailer |
 
-#### Chefs
+## Scale
 
-- **Create Recipe**: A comprehensive form page where chefs can submit new recipes, complete with ingredients, directions, images, and additional tips.
-- **View My Recipes**: Chefs can view a list of all recipes they have submitted and perform actions like edit or delete.
+Counted directly from the route files:
 
-#### Admins
+| Metric | Count |
+|---|---|
+| REST API endpoints | 23, across 4 route modules (user, recipe, news, email) |
+| User roles | 3 (Admin, Chef, General User) |
+| Data models | 3 (User, Recipe, HubNews) |
 
-- **Manage All Users**: Admins can view all user profiles, make edits to user roles (e.g., upgrading a user to a chef), and handle account activations or suspensions.
-- **Manage All Recipes**: Provides a dashboard to oversee all submitted recipes, approve new entries, edit content for clarity or completeness, or remove recipes if necessary.
-- **News**: The Admin has the ability to post any news or updates even Events which can be viewed by both the user and chef.
+## Install
 
-## User Interface
+Requires Node 18+ and a MongoDB instance (local or Atlas).
 
-### Design
+```bash
+git clone https://github.com/anishneu/RecipeHub.git
+cd RecipeHub
 
-- **Responsive Layout**: Ensures a seamless experience across desktops, tablets, and mobile devices.
-- **Intuitive Navigation**: Simple, clear navigation menus to ensure users can find their way around easily.
-- **Accessibility Features**: High contrast modes, text to speech, and keyboard navigability to help users with disabilities.
+# Backend
+cd backend
+npm install
+cp .env.example .env   # MONGO_URI, JWT_SECRET, SMTP creds
 
-### Interactivity
+# Frontend
+cd ../frontend
+npm install
+```
 
-- **User Feedback**: Interactive forms and surveys to gather user input and suggestions.
-- **Dynamic Content**: Real-time updates of content based on user interactions and preferences.
+## Quickstart
 
-## Roles and Access Control
+```bash
+# Backend
+cd backend && npm start        # runs on the port set in .env
 
-### Access Levels
+# Frontend
+cd frontend && npm start       # CRA dev server on :3000
+```
 
-- **General User**:
-  - Can browse and filter recipes
-  - Can save recipes to their personal profile
-- **Chef**:
-  - Has all general user privileges
-  - Can submit new recipes
-  - Can edit or delete their own recipes
-- **Admin**:
-  - Has all privileges of general users and chefs
-  - Can edit or delete any recipes
-  - Can manage user accounts and roles
-  - Can post News and updates across the platform
+API docs (Swagger UI) are served once the backend is running — see `backend/src/routes` for the mount path.
 
-### Authentication and Security
+## Project structure
 
-- **Secure Login**: Implementation of secure login processes with hashed passwords.
-- **Role-Based Redirects**: Ensuring users land on appropriate pages based on their role after login.
-- **Data Protection**: Use of best practices in data protection to safeguard user information and recipes.
+```
+RecipeHub/
+├── backend/
+│   └── src/
+│       ├── models/       User.js, Recipe.js, HubNews.js
+│       ├── routes/       userRoutes, recipeRoutes, newsRoutes, emailRoutes
+│       └── services/      Business logic
+└── frontend/
+    └── src/
+        ├── Component/     UI components
+        ├── Redux/          Store, actions, reducers
+        └── actions/        Redux action creators
+```
 
-## Navigation Paths
+## API reference
 
-### For General Users
+| Route group | Endpoints | Purpose |
+|---|---|---|
+| `/user` | 10 | Register, login, edit, get chefs/users, saved-recipe management |
+| `/recipe` | 10 | CRUD, search by tag/ingredients/rating, ratings |
+| `/news` | 2 | Create/fetch culinary news items |
+| `/email` | 1 | Contact/notification email send |
 
-- **Home** -> **Recipe List** -> **Selected Recipe**
-- **Home** -> **Saved Recipes**
+## Limitations
 
-### For Chefs
+- No live deployment currently — runs locally or would need a host (Render/Railway) + MongoDB Atlas.
+- No automated test suite.
+- No CI/CD pipeline configured.
 
-- **Home** -> **Create Recipe** -> **Submit Recipe**
-- **Home** -> **View My Recipes** -> **Edit/Delete**
-
-### For Admins
-
-- **Home** -> **Manage All Users** -> **Edit/Suspend User**
-- **Home** -> **Manage All Recipes** -> **Approve/Edit/Remove Recipe**
-
-## Community and Support
-
-### User Community
-
-- **Forums and Discussion Boards**: Places for users to share tips, recipes, and culinary experiences.
-- **Social Media Integration**: Easy sharing of recipes to social media platforms to enhance community engagement.
-
-### Support System
-
-- **Help Desk**: Dedicated support team to handle technical and navigational issues.
-- **Resource Center**: Articles, videos, and guides on how to make the most of Recipe Hub’s features.
-
-## Future Enhancements
-
-### Planned Features
-
-- **Recipe Rating System**: Allowing users to rate recipes and provide feedback.
-- **Chef Levels and Badges**: Implementing a system to reward active and popular chefs with badges and levels.
-- **Ingredient Delivery Integration**: Partnering with grocery delivery services to provide ingredients for recipes directly through the app.
-
-### Suggestions for Contributions
-
-- **Feature Enhancements**: Ideas on new features or improvements to existing ones.
-- **Bug Reports**: Help in identifying and fixing potential bugs in the system.
-- **Localization**: Assistance in translating the app into other languages to reach a broader audience.
 
 ---
 
