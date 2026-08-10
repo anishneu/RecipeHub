@@ -2,7 +2,13 @@
 
 Full-stack, role-based recipe discovery and publishing platform.
 
-<img src="images/recipehub-landing.png" alt="Recipe Hub landing page" width="800"/>
+![Recipe Hub landing page](docs/recipehub-landing.gif)
+
+<p align="center">
+  <a href="https://anish-recipehub.netlify.app">Live demo</a>
+  ·
+  <a href="frontend/public/videos/cooking.mp4">Full landing hero video</a>
+</p>
 
 Recipe Hub lets three kinds of users — general users, chefs, and admins — interact with a shared recipe catalog differently: general users discover and save recipes, chefs publish and manage their own, and the platform layers in live culinary news alongside seasonal UI theming. The API is documented with Swagger rather than left for the frontend to reverse-engineer, and auth is JWT-based with bcrypt-hashed credentials rather than rolled by hand.
 
