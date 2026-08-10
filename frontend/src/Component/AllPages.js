@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
+import API_BASE from '../api';
   Table,
   TableHead,
   TableBody,
@@ -39,7 +40,7 @@ const AllPages = () => {
   useEffect(() => {
     document.body.style.backgroundColor = '#c5e1a5';
     return () => {
-      document.body.style.backgroundColor = '';
+      document.body.style.backgroundColor = '`;
     };
   }, []);
 
@@ -47,17 +48,17 @@ const AllPages = () => {
     const fetchData = async () => {
       try {
         if (tabValue === 0) {
-          const usersResponse = await axios.get(`http://localhost:5000/user/getAllUsers`);
+          const usersResponse = await axios.get(`${API_BASE}/user/getAllUsers`);
           setUsers(usersResponse.data);
         } else if (tabValue === 1) {
-          const chefsResponse = await axios.get(`http://localhost:5000/user/getAllChefs`);
+          const chefsResponse = await axios.get(`${API_BASE}/user/getAllChefs`);
           setChefs(chefsResponse.data);
         } else if (tabValue === 2) {
-          const recipesResponse = await axios.get(`http://localhost:5000/recipe/getAll`);
+          const recipesResponse = await axios.get(`${API_BASE}/recipe/getAll`);
           setRecipes(recipesResponse.data);
         }
       } catch (err) {
-        console.error('Error fetching data:', err);
+        console.error(`Error fetching data:', err);
         setError('An unexpected error occurred');
       }
     };
@@ -67,7 +68,7 @@ const AllPages = () => {
 
   const handleDeleteUser = async (email) => {
     try {
-      const response = await axios.delete('http://localhost:5000/user/delete', { data: { email } });
+      const response = await axios.delete(`${API_BASE}/user/delete`, { data: { email } });
       if (response.status === 200) setUsers(users.filter((user) => user.email !== email));
     } catch (err) {
       console.error('Error deleting user:', err);
@@ -77,7 +78,7 @@ const AllPages = () => {
 
   const handleDeleteChef = async (email) => {
     try {
-      const response = await axios.delete('http://localhost:5000/user/delete', { data: { email } });
+      const response = await axios.delete(`${API_BASE}/user/delete`, { data: { email } });
       if (response.status === 200) setChefs(chefs.filter((chef) => chef.email !== email));
     } catch (err) {
       console.error('Error deleting chef:', err);
@@ -87,7 +88,7 @@ const AllPages = () => {
 
   const handleDeleteRecipe = async (recipeId) => {
     try {
-      const response = await axios.delete('http://localhost:5000/recipe/delete', { data: { recipeId } });
+      const response = await axios.delete(`${API_BASE}/recipe/delete`, { data: { recipeId } });
       if (response.status === 200) setRecipes(recipes.filter((recipe) => recipe.recipeId !== recipeId));
     } catch (err) {
       console.error('Error deleting recipe:', err);

@@ -10,6 +10,7 @@ import {
   DialogActions,
 } from '@mui/material';
 import axios from 'axios';
+import API_BASE from '../api';
 
 const ViewRecipes = () => {
   const [recipes, setRecipes] = useState([]);
@@ -24,7 +25,7 @@ const ViewRecipes = () => {
   useEffect(() => {
     document.body.style.backgroundColor = '#b39ddb';
     return () => {
-      document.body.style.backgroundColor = '';
+      document.body.style.backgroundColor = '`;
     };
   }, []);
 
@@ -32,10 +33,10 @@ const ViewRecipes = () => {
     const fetchRecipes = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`http://localhost:5000/recipe/creatorId/${userId}`);
+        const response = await axios.get(`${API_BASE}/recipe/creatorId/${userId}`);
         setRecipes(response.data);
       } catch (err) {
-        setError('Failed to fetch recipes. Please try again later.');
+        setError(`Failed to fetch recipes. Please try again later.');
         console.error(err);
       } finally {
         setLoading(false);
@@ -86,13 +87,13 @@ const ViewRecipes = () => {
                     role="button"
                     tabIndex={0}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
+                      if (e.key === 'Enter`) {
                         setExpandedId(expandedId === recipe.recipeId ? null : recipe.recipeId);
                       }
                     }}
                   >
                     <img
-                      src={`http://localhost:5000/recipe/images/${recipe.creatorId}/${recipe.imagePath}`}
+                      src={`${API_BASE}/recipe/images/${recipe.creatorId}/${recipe.imagePath}`}
                       alt={recipe.name}
                     />
                   </div>
@@ -104,7 +105,7 @@ const ViewRecipes = () => {
                         size="small"
                         onClick={() => handleOpen(recipe)}
                         sx={{
-                          textTransform: 'none',
+                          textTransform: `none',
                           color: '#673ab7',
                           fontWeight: 600,
                           fontFamily: 'Outfit, sans-serif',

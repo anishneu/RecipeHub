@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button, CircularProgress, TextField, Typography, Alert } from '@mui/material';
 import axios from 'axios';
+import API_BASE from '../api';
 
 const CreateRecipe = () => {
   const creatorId = localStorage.getItem('userId');
@@ -46,7 +47,7 @@ const CreateRecipe = () => {
 
     setLoading(true);
     try {
-      await axios.post('http://localhost:5000/recipe/create', data, {
+      await axios.post(`${API_BASE}/recipe/create`, data, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       alert('Recipe created successfully!');
@@ -68,7 +69,7 @@ const CreateRecipe = () => {
     <div className="create-split">
       <aside
         className="create-split__visual"
-        style={{ backgroundImage: 'url(http://localhost:5000/images/createRecipe.png)' }}
+        style={{ backgroundImage: `url(${API_BASE}/images/createRecipe.png)` }}
       >
         <div className="create-split__veil" />
         <h1 style={{ opacity: fadeIn ? 1 : 0 }}>Create recipe</h1>

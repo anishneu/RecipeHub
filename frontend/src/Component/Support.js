@@ -5,6 +5,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import axios from 'axios';
 import supimg from '../images/support.webp';
 import food from '../images/food.webp';
+import API_BASE from '../api';
 
 const Support = () => {
   const [formData, setFormData] = useState({ name: '', email: '', description: '' });
@@ -24,7 +25,7 @@ const Support = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/email/send', {
+      await axios.post(`${API_BASE}/email/send`, {
         recipientEmail: 'cyberzerox27@gmail.com',
         subject: 'Recipe Hub - Contact Us',
         text: `Hello Recipe Hub Team,\nBelow is a message sent by ${formData.name} with email id - ${formData.email}\n\n**${formData.description}**`,

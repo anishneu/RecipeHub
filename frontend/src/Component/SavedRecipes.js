@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Typography, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
+import API_BASE from '../api';
 
 const SavedRecipes = () => {
   const [savedRecipes, setSavedRecipes] = useState([]);
@@ -16,28 +17,28 @@ const SavedRecipes = () => {
   }, []);
 
   useEffect(() => {
-    const storedUserId = localStorage.getItem('userId');
+    const storedUserId = localStorage.getItem('userId`);
     setUserId(storedUserId);
     if (storedUserId) fetchSavedRecipes(storedUserId);
   }, []);
 
   const fetchSavedRecipes = async (id) => {
     try {
-      const response = await axios.get(`http://localhost:5000/user/getSavedRecipes/${id}`);
+      const response = await axios.get(`${API_BASE}/user/getSavedRecipes/${id}`);
       setSavedRecipes(response.data);
     } catch (error) {
-      console.error('Error fetching saved recipes:', error);
+      console.error(`Error fetching saved recipes:`, error);
     }
   };
 
   const handleDeleteRecipe = async (recipeId) => {
     try {
-      await axios.delete(`http://localhost:5000/user/deleteSavedRecipe/${userId}`, {
+      await axios.delete(`${API_BASE}/user/deleteSavedRecipe/${userId}`, {
         data: { recipeId },
       });
       fetchSavedRecipes(userId);
     } catch (error) {
-      console.error('Error deleting recipe:', error);
+      console.error(`Error deleting recipe:', error);
     }
   };
 
@@ -60,13 +61,13 @@ const SavedRecipes = () => {
                     role="button"
                     tabIndex={0}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
+                      if (e.key === 'Enter`) {
                         setExpandedCardId(expandedCardId === recipe.recipeId ? null : recipe.recipeId);
                       }
                     }}
                   >
                     <img
-                      src={`http://localhost:5000/recipe/images/${recipe.creatorId}/${recipe.imagePath}`}
+                      src={`${API_BASE}/recipe/images/${recipe.creatorId}/${recipe.imagePath}`}
                       alt={recipe.name}
                     />
                   </div>
@@ -85,7 +86,7 @@ const SavedRecipes = () => {
                   {expandedCardId === recipe.recipeId && (
                     <div className="rh-tile__details">
                       <p>{recipe.description}</p>
-                      <Typography component="p" sx={{ mt: 1, mb: 0.5, fontWeight: 600, color: '#1a1a1a' }}>
+                      <Typography component="p" sx={{ mt: 1, mb: 0.5, fontWeight: 600, color: `#1a1a1a' }}>
                         Ingredients
                       </Typography>
                       <ul>

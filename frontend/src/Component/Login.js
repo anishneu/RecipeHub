@@ -5,6 +5,7 @@ import { Box, TextField, Button, Typography } from '@mui/material';
 import { jwtDecode } from 'jwt-decode';
 import { loginSuccess, loginFailure } from '../actions/authActions';
 import { useDispatch } from 'react-redux';
+import API_BASE from '../api';
 
 const fieldSx = {
   mb: 0.5,
@@ -35,7 +36,7 @@ const Login = () => {
     setError('');
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/user/login', { email, password });
+      const response = await axios.post(`${API_BASE}/user/login`, { email, password });
       if (response.data.success) {
         localStorage.setItem('token', response.data.token);
         const decodedToken = jwtDecode(response.data.token);

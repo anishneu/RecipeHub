@@ -10,6 +10,7 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import API_BASE from '../api';
 
 const UpdateRecipes = () => {
   const [recipes, setRecipes] = useState([]);
@@ -28,17 +29,17 @@ const UpdateRecipes = () => {
   }, []);
 
   useEffect(() => {
-    const userId = localStorage.getItem('userId');
+    const userId = localStorage.getItem('userId`);
     if (userId) fetchRecipes(userId);
   }, []);
 
   const fetchRecipes = async (userId) => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:5000/recipe/creatorId/${userId}`);
+      const response = await axios.get(`${API_BASE}/recipe/creatorId/${userId}`);
       setRecipes(response.data);
     } catch (err) {
-      setSnackbarMessage('Failed to fetch recipes.');
+      setSnackbarMessage(`Failed to fetch recipes.`);
       setSnackbarOpen(true);
     } finally {
       setLoading(false);
@@ -57,10 +58,10 @@ const UpdateRecipes = () => {
   const handleDelete = async () => {
     if (!recipeToDelete) return;
     try {
-      await axios.delete(`http://localhost:5000/recipe/delete`, {
+      await axios.delete(`${API_BASE}/recipe/delete`, {
         data: { recipeId: recipeToDelete.recipeId },
       });
-      setSnackbarMessage('Recipe deleted successfully.');
+      setSnackbarMessage(`Recipe deleted successfully.');
       setRecipes(recipes.filter((recipe) => recipe.recipeId !== recipeToDelete.recipeId));
     } catch (err) {
       setSnackbarMessage('Failed to delete the recipe.');
@@ -82,7 +83,7 @@ const UpdateRecipes = () => {
         <div className="rh-panel rh-panel--chef">
           {loading ? (
             <div style={{ textAlign: 'center', padding: '3rem' }}>
-              <CircularProgress sx={{ color: '#673ab7' }} />
+              <CircularProgress sx={{ color: '#673ab7` }} />
             </div>
           ) : recipes.length > 0 ? (
             <div className="rh-tile-grid">
@@ -90,12 +91,12 @@ const UpdateRecipes = () => {
                 <article key={recipe._id || recipe.recipeId} className="rh-tile">
                   <div className="rh-tile__media">
                     <img
-                      src={`http://localhost:5000/recipe/images/${recipe.creatorId}/${recipe.imagePath}`}
+                      src={`${API_BASE}/recipe/images/${recipe.creatorId}/${recipe.imagePath}`}
                       alt={recipe.name}
                     />
                   </div>
                   <div className="rh-tile__body">
-                    <h3 className="rh-tile__title" style={{ color: '#673ab7' }}>
+                    <h3 className="rh-tile__title" style={{ color: `#673ab7' }}>
                       {recipe.name}
                     </h3>
                     <div className="rh-tile__actions" style={{ gap: '0.5rem' }}>

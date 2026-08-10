@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Box, TextField, Button, Typography, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import API_BASE from '../api';
 
 const textFieldStyles = {
   mb: 0.5,
@@ -41,7 +42,7 @@ const Register = () => {
     }
 
     try {
-      await axios.post('http://localhost:5000/user/create', { fullName, email, password, role });
+      await axios.post(`${API_BASE}/user/create`, { fullName, email, password, role });
       navigate('/Login');
       setError('Registration functionality not implemented yet.');
     } catch (err) {

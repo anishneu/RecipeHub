@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Box, TextField, Button, Typography, CircularProgress } from '@mui/material';
+import API_BASE from '../api';
 
 const EditRecipe = () => {
   const { id } = useParams();
@@ -19,7 +20,7 @@ const EditRecipe = () => {
   useEffect(() => {
     document.body.style.backgroundColor = '#d7ccc8';
     return () => {
-      document.body.style.backgroundColor = '';
+      document.body.style.backgroundColor = '`;
     };
   }, []);
 
@@ -27,11 +28,11 @@ const EditRecipe = () => {
     const fetchRecipe = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`http://localhost:5000/recipe/recipeId/${id}`);
+        const response = await axios.get(`${API_BASE}/recipe/recipeId/${id}`);
         setRecipe(response.data);
       } catch (err) {
-        console.error('Failed to fetch recipe details:', err.response ? err.response.data : err);
-        setError('Failed to fetch recipe details');
+        console.error(`Failed to fetch recipe details:', err.response ? err.response.data : err);
+        setError('Failed to fetch recipe details`);
       } finally {
         setLoading(false);
       }
@@ -51,8 +52,8 @@ const EditRecipe = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.put(`http://localhost:5000/recipe/edit`, recipe);
-      navigate('/ViewRecipes');
+      await axios.put(`${API_BASE}/recipe/edit`, recipe);
+      navigate(`/ViewRecipes');
     } catch (err) {
       console.error('Failed to update recipe:', err);
       setError('Failed to update recipe');

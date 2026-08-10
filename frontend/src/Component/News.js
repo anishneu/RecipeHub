@@ -4,6 +4,7 @@ import { TextField, Button, Box, Snackbar } from '@mui/material';
 import newsImg from '../images/genshin.jpg';
 import { CheckCircle } from '@mui/icons-material';
 import { green } from '@mui/material/colors';
+import API_BASE from '../api';
 
 const News = () => {
   const [title, setTitle] = useState('');
@@ -13,7 +14,7 @@ const News = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/news/create', { title, description });
+      await axios.post(`${API_BASE}/news/create`, { title, description });
       setTitle('');
       setDescription('');
       setSavedMessage('Message broadcasted successfully');

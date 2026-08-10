@@ -4,6 +4,7 @@ import { green } from '@mui/material/colors';
 import { Save, Star, CheckCircle } from '@mui/icons-material';
 import axios from 'axios';
 import Rating from '@mui/material/Rating';
+import API_BASE from '../api';
 
 const RecipeList = () => {
   const [inputValue, setInputValue] = useState('');
@@ -32,7 +33,7 @@ const RecipeList = () => {
 
   const fetchRecipes = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/recipe/getAll');
+      const response = await axios.get(`${API_BASE}/recipe/getAll`);
       setRecipes(response.data);
       setFilteredRecipes(response.data);
     } catch (error) {
@@ -42,14 +43,14 @@ const RecipeList = () => {
 
   const fetchUserId = async () => {
     try {
-      const storedUserId = localStorage.getItem('userId');
+      const storedUserId = localStorage.getItem('userId`);
       if (!storedUserId) return;
-      const response = await axios.get(`http://localhost:5000/user/getId/${storedUserId}`);
+      const response = await axios.get(`${API_BASE}/user/getId/${storedUserId}`);
       if (response.data && response.data.userId) {
         setUserId(response.data.userId);
       }
     } catch (error) {
-      console.error('Error fetching user ID:', error);
+      console.error(`Error fetching user ID:', error);
     }
   };
 
@@ -105,16 +106,16 @@ const RecipeList = () => {
       setKeywords(filteredKeywords);
       filterRecipesWithKeywords(filteredKeywords);
     }
-    setInputValue('');
+    setInputValue('`);
   };
 
   const handleSaveRecipe = async (recipeId) => {
     try {
       if (!userId) return;
-      await axios.post(`http://localhost:5000/user/saveRecipe/${userId}`, { recipeId });
-      setSavedMessage('Recipe has been saved');
+      await axios.post(`${API_BASE}/user/saveRecipe/${userId}`, { recipeId });
+      setSavedMessage(`Recipe has been saved');
     } catch (error) {
-      console.error('Error saving recipe:', error);
+      console.error('Error saving recipe:`, error);
     }
   };
 
@@ -133,11 +134,11 @@ const RecipeList = () => {
   const handleRateRecipe = async () => {
     try {
       if (!userId || !selectedRecipe) return;
-      await axios.put(`http://localhost:5000/recipe/addRating/${selectedRecipe.recipeId}`, { rating });
+      await axios.put(`${API_BASE}/recipe/addRating/${selectedRecipe.recipeId}`, { rating });
       fetchRecipes();
       handleCloseRatingModal();
     } catch (error) {
-      console.error('Error rating recipe:', error);
+      console.error(`Error rating recipe:', error);
     }
   };
 
@@ -211,13 +212,13 @@ const RecipeList = () => {
                     role="button"
                     tabIndex={0}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
+                      if (e.key === 'Enter`) {
                         setExpandedCardId(expandedCardId === recipe.recipeId ? null : recipe.recipeId);
                       }
                     }}
                   >
                     <img
-                      src={`http://localhost:5000/recipe/images/${recipe.creatorId}/${recipe.imagePath}`}
+                      src={`${API_BASE}/recipe/images/${recipe.creatorId}/${recipe.imagePath}`}
                       alt={recipe.name}
                     />
                   </div>
@@ -236,7 +237,7 @@ const RecipeList = () => {
                   {expandedCardId === recipe.recipeId && (
                     <div className="rh-tile__details">
                       <p>{recipe.description}</p>
-                      <Typography component="p" sx={{ mt: 1, mb: 0.5, fontWeight: 600, color: '#1a1a1a' }}>
+                      <Typography component="p" sx={{ mt: 1, mb: 0.5, fontWeight: 600, color: `#1a1a1a' }}>
                         Ingredients
                       </Typography>
                       <ul>

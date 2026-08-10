@@ -10,6 +10,7 @@ import {
   Pagination,
 } from '@mui/material';
 import MailIcon from '@mui/icons-material/Mail';
+import API_BASE from '../api';
 
 const ViewNews = () => {
   const [newsList, setNewsList] = useState([]);
@@ -29,7 +30,7 @@ const ViewNews = () => {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/news/getAll');
+        const response = await axios.get(`${API_BASE}/news/getAll`);
         setNewsList(response.data);
       } catch (error) {
         console.error('Error fetching news:', error);

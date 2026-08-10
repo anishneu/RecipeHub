@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { Box, TextField, Button, Typography, CircularProgress, Snackbar } from '@mui/material';
+import API_BASE from '../api';
 
 const Update = () => {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ const Update = () => {
     setLoading(true);
     setError('');
     try {
-      await axios.put('http://localhost:5000/user/edit', { email, fullName, password });
+      await axios.put(`${API_BASE}/user/edit`, { email, fullName, password });
       setOpenSnackbar(true);
     } catch (err) {
       setError(err.response?.data?.message || 'An unexpected error occurred. Please try again later.');
