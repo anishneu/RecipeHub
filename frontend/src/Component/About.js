@@ -6,14 +6,6 @@ import foodHero from '../images/food.webp';
 const AboutPage = () => {
   const { loggedIn } = useSelector((state) => state.auth);
 
-
-  const secondaryCta = (() => {
-    if (!loggedIn) {
-      return { to: '/Register', label: 'Join the hub' };
-    }
-    return { to: '/Home', label: 'Back to cooking' };
-  })();
-
   return (
     <div className="about">
       <section className="about-hero">
@@ -64,9 +56,11 @@ const AboutPage = () => {
             <Link to="/Home" className="rh-btn rh-btn--home">
               Back to Home
             </Link>
-            <Link to={secondaryCta.to} className="rh-btn about-main__join">
-              {secondaryCta.label}
-            </Link>
+            {!loggedIn && (
+              <Link to="/Register" className="rh-btn about-main__join">
+                Join the hub
+              </Link>
+            )}
           </div>
         </div>
       </section>

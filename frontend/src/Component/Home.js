@@ -146,7 +146,7 @@ const Home = () => {
         welcomeTitle: 'Operations for the whole kitchen',
         welcomeBody:
           'Spot-check users and chefs, keep news fresh, and make sure the community stays tidy.',
-        welcomeCta: { to: '/Admin', label: 'Admin home' },
+        welcomeCta: { to: '/AllPages', label: 'Open manage' },
         highlights: [
           { title: 'Users & recipes', image: image1, to: '/AllPages' },
           { title: 'Publish news', image: image3, to: '/News' },

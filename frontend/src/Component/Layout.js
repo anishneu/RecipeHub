@@ -39,7 +39,6 @@ function Layout() {
                   <Nav.Link as={Link} to="/ViewRecipes">View</Nav.Link>
                   <Nav.Link as={Link} to="/UpdateRecipes">Manage</Nav.Link>
                   <NavDropdown title="Account" id="chef-nav-dropdown">
-                    <NavDropdown.Item as={Link} to="/Chef">Chef workspace</NavDropdown.Item>
                     <NavDropdown.Item as={Link} to="/editProfile">Edit Profile</NavDropdown.Item>
                     <NavDropdown.Item as={Link} to="/ViewNews">News & Updates</NavDropdown.Item>
                     <NavDropdown.Item as={Link} to="/Support">Support</NavDropdown.Item>
@@ -54,7 +53,6 @@ function Layout() {
                   <Nav.Link as={Link} to="/RecipeList">Recipes</Nav.Link>
                   <Nav.Link as={Link} to="/SavedRecipes">Favourites</Nav.Link>
                   <NavDropdown title="Account" id="user-nav-dropdown">
-                    <NavDropdown.Item as={Link} to="/User">My kitchen</NavDropdown.Item>
                     <NavDropdown.Item as={Link} to="/editProfile">Edit Profile</NavDropdown.Item>
                     <NavDropdown.Item as={Link} to="/ViewNews">News & Updates</NavDropdown.Item>
                     <NavDropdown.Item as={Link} to="/Support">Support</NavDropdown.Item>
@@ -69,7 +67,6 @@ function Layout() {
                   <Nav.Link as={Link} to="/AllPages">Manage</Nav.Link>
                   <Nav.Link as={Link} to="/News">News</Nav.Link>
                   <NavDropdown title="Account" id="admin-nav-dropdown">
-                    <NavDropdown.Item as={Link} to="/Admin">Admin home</NavDropdown.Item>
                     <NavDropdown.Item as={Link} to="/editProfile">Edit Profile</NavDropdown.Item>
                     <NavDropdown.Item as={Link} to="/Support">Support</NavDropdown.Item>
                     <NavDropdown.Divider />
