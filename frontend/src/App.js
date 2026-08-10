@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import './App.css';
 import Home from './Component/Home';
 import RecipeList from './Component/RecipeList';
@@ -27,6 +27,11 @@ import { connect } from 'react-redux';
 import { jwtDecode } from 'jwt-decode';
 
 function App({ loggedIn, userType, loginSuccess, logout }) {
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem('token');
+    logout();
+  }, [logout]);
+
   useEffect(() => {
     document.title = "Recipe Hub";
     const token = localStorage.getItem('token');
@@ -44,12 +49,8 @@ function App({ loggedIn, userType, loginSuccess, logout }) {
         loginSuccess(token, userType);
       }
     }
-  }, [loginSuccess]);
+  }, [loginSuccess, handleLogout]);
 
-  const handleLogout = () => {
-      localStorage.removeItem('token');
-      logout();
-  };
   return (
     <BrowserRouter>
       <Routes>
