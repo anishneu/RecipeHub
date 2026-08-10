@@ -17,7 +17,7 @@ const SavedRecipes = () => {
   }, []);
 
   useEffect(() => {
-    const storedUserId = localStorage.getItem('userId`);
+    const storedUserId = localStorage.getItem('userId');
     setUserId(storedUserId);
     if (storedUserId) fetchSavedRecipes(storedUserId);
   }, []);
@@ -27,7 +27,7 @@ const SavedRecipes = () => {
       const response = await axios.get(`${API_BASE}/user/getSavedRecipes/${id}`);
       setSavedRecipes(response.data);
     } catch (error) {
-      console.error(`Error fetching saved recipes:`, error);
+      console.error('Error fetching saved recipes:', error);
     }
   };
 
@@ -38,7 +38,7 @@ const SavedRecipes = () => {
       });
       fetchSavedRecipes(userId);
     } catch (error) {
-      console.error(`Error deleting recipe:', error);
+      console.error('Error deleting recipe:', error);
     }
   };
 
@@ -61,7 +61,7 @@ const SavedRecipes = () => {
                     role="button"
                     tabIndex={0}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter`) {
+                      if (e.key === 'Enter') {
                         setExpandedCardId(expandedCardId === recipe.recipeId ? null : recipe.recipeId);
                       }
                     }}
@@ -86,7 +86,7 @@ const SavedRecipes = () => {
                   {expandedCardId === recipe.recipeId && (
                     <div className="rh-tile__details">
                       <p>{recipe.description}</p>
-                      <Typography component="p" sx={{ mt: 1, mb: 0.5, fontWeight: 600, color: `#1a1a1a' }}>
+                      <Typography component="p" sx={{ mt: 1, mb: 0.5, fontWeight: 600, color: '#1a1a1a' }}>
                         Ingredients
                       </Typography>
                       <ul>

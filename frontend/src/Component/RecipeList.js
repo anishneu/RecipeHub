@@ -43,14 +43,14 @@ const RecipeList = () => {
 
   const fetchUserId = async () => {
     try {
-      const storedUserId = localStorage.getItem('userId`);
+      const storedUserId = localStorage.getItem('userId');
       if (!storedUserId) return;
       const response = await axios.get(`${API_BASE}/user/getId/${storedUserId}`);
       if (response.data && response.data.userId) {
         setUserId(response.data.userId);
       }
     } catch (error) {
-      console.error(`Error fetching user ID:', error);
+      console.error('Error fetching user ID:', error);
     }
   };
 
@@ -106,16 +106,16 @@ const RecipeList = () => {
       setKeywords(filteredKeywords);
       filterRecipesWithKeywords(filteredKeywords);
     }
-    setInputValue('`);
+    setInputValue('');
   };
 
   const handleSaveRecipe = async (recipeId) => {
     try {
       if (!userId) return;
       await axios.post(`${API_BASE}/user/saveRecipe/${userId}`, { recipeId });
-      setSavedMessage(`Recipe has been saved');
+      setSavedMessage('Recipe has been saved');
     } catch (error) {
-      console.error('Error saving recipe:`, error);
+      console.error('Error saving recipe:', error);
     }
   };
 
@@ -138,7 +138,7 @@ const RecipeList = () => {
       fetchRecipes();
       handleCloseRatingModal();
     } catch (error) {
-      console.error(`Error rating recipe:', error);
+      console.error('Error rating recipe:', error);
     }
   };
 
@@ -212,7 +212,7 @@ const RecipeList = () => {
                     role="button"
                     tabIndex={0}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter`) {
+                      if (e.key === 'Enter') {
                         setExpandedCardId(expandedCardId === recipe.recipeId ? null : recipe.recipeId);
                       }
                     }}
@@ -237,7 +237,7 @@ const RecipeList = () => {
                   {expandedCardId === recipe.recipeId && (
                     <div className="rh-tile__details">
                       <p>{recipe.description}</p>
-                      <Typography component="p" sx={{ mt: 1, mb: 0.5, fontWeight: 600, color: `#1a1a1a' }}>
+                      <Typography component="p" sx={{ mt: 1, mb: 0.5, fontWeight: 600, color: '#1a1a1a' }}>
                         Ingredients
                       </Typography>
                       <ul>

@@ -20,7 +20,7 @@ const EditRecipe = () => {
   useEffect(() => {
     document.body.style.backgroundColor = '#d7ccc8';
     return () => {
-      document.body.style.backgroundColor = '`;
+      document.body.style.backgroundColor = '';
     };
   }, []);
 
@@ -31,8 +31,8 @@ const EditRecipe = () => {
         const response = await axios.get(`${API_BASE}/recipe/recipeId/${id}`);
         setRecipe(response.data);
       } catch (err) {
-        console.error(`Failed to fetch recipe details:', err.response ? err.response.data : err);
-        setError('Failed to fetch recipe details`);
+        console.error('Failed to fetch recipe details:', err.response ? err.response.data : err);
+        setError('Failed to fetch recipe details');
       } finally {
         setLoading(false);
       }
@@ -53,7 +53,7 @@ const EditRecipe = () => {
     setLoading(true);
     try {
       await axios.put(`${API_BASE}/recipe/edit`, recipe);
-      navigate(`/ViewRecipes');
+      navigate('/ViewRecipes');
     } catch (err) {
       console.error('Failed to update recipe:', err);
       setError('Failed to update recipe');

@@ -29,7 +29,7 @@ const UpdateRecipes = () => {
   }, []);
 
   useEffect(() => {
-    const userId = localStorage.getItem('userId`);
+    const userId = localStorage.getItem('userId');
     if (userId) fetchRecipes(userId);
   }, []);
 
@@ -39,7 +39,7 @@ const UpdateRecipes = () => {
       const response = await axios.get(`${API_BASE}/recipe/creatorId/${userId}`);
       setRecipes(response.data);
     } catch (err) {
-      setSnackbarMessage(`Failed to fetch recipes.`);
+      setSnackbarMessage('Failed to fetch recipes.');
       setSnackbarOpen(true);
     } finally {
       setLoading(false);
@@ -61,7 +61,7 @@ const UpdateRecipes = () => {
       await axios.delete(`${API_BASE}/recipe/delete`, {
         data: { recipeId: recipeToDelete.recipeId },
       });
-      setSnackbarMessage(`Recipe deleted successfully.');
+      setSnackbarMessage('Recipe deleted successfully.');
       setRecipes(recipes.filter((recipe) => recipe.recipeId !== recipeToDelete.recipeId));
     } catch (err) {
       setSnackbarMessage('Failed to delete the recipe.');
@@ -83,7 +83,7 @@ const UpdateRecipes = () => {
         <div className="rh-panel rh-panel--chef">
           {loading ? (
             <div style={{ textAlign: 'center', padding: '3rem' }}>
-              <CircularProgress sx={{ color: '#673ab7` }} />
+              <CircularProgress sx={{ color: '#673ab7' }} />
             </div>
           ) : recipes.length > 0 ? (
             <div className="rh-tile-grid">
@@ -96,7 +96,7 @@ const UpdateRecipes = () => {
                     />
                   </div>
                   <div className="rh-tile__body">
-                    <h3 className="rh-tile__title" style={{ color: `#673ab7' }}>
+                    <h3 className="rh-tile__title" style={{ color: '#673ab7' }}>
                       {recipe.name}
                     </h3>
                     <div className="rh-tile__actions" style={{ gap: '0.5rem' }}>

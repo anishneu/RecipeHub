@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
-import API_BASE from '../api';
   Table,
   TableHead,
   TableBody,
@@ -15,6 +14,7 @@ import API_BASE from '../api';
   createTheme,
   ThemeProvider,
 } from '@mui/material';
+import API_BASE from '../api';
 
 const theme = createTheme({
   palette: {
@@ -40,7 +40,7 @@ const AllPages = () => {
   useEffect(() => {
     document.body.style.backgroundColor = '#c5e1a5';
     return () => {
-      document.body.style.backgroundColor = '`;
+      document.body.style.backgroundColor = '';
     };
   }, []);
 
@@ -58,7 +58,7 @@ const AllPages = () => {
           setRecipes(recipesResponse.data);
         }
       } catch (err) {
-        console.error(`Error fetching data:', err);
+        console.error('Error fetching data:', err);
         setError('An unexpected error occurred');
       }
     };
