@@ -54,13 +54,16 @@ const Register = () => {
       const data = err.response?.data;
       if (data?.errors?.length) {
         setError(data.errors.map((e) => e.msg).join('. '));
+      } else if (data?.message === 'User already exists') {
+        setError('An account with this email already exists. Please sign in instead.');
       } else if (data?.message) {
         setError(data.message);
       } else {
         setError('An unexpected error occurred. Please try again later.');
       }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
