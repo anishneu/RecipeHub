@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, CircularProgress, Grid, Paper, TextField, Typography, Alert } from '@mui/material';
+import { Box, Button, CircularProgress, TextField, Typography, Alert } from '@mui/material';
 import axios from 'axios';
 
 const CreateRecipe = () => {
@@ -14,10 +14,9 @@ const CreateRecipe = () => {
   const [fileName, setFileName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [fadeIn, setFadeIn] = useState(false); // State for controlling the fade-in effect
+  const [fadeIn, setFadeIn] = useState(false);
 
   useEffect(() => {
-    // Trigger the fade-in effect after the component mounts
     setFadeIn(true);
   }, []);
 
@@ -26,10 +25,10 @@ const CreateRecipe = () => {
   };
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFile(file);
-      setFileName(file.name);
+    const next = e.target.files[0];
+    if (next) {
+      setFile(next);
+      setFileName(next.name);
     }
   };
 
@@ -42,17 +41,14 @@ const CreateRecipe = () => {
 
     const data = new FormData();
     data.append('image', file);
-    Object.keys(formData).forEach(key => data.append(key, formData[key]));
+    Object.keys(formData).forEach((key) => data.append(key, formData[key]));
     data.append('creatorId', creatorId);
 
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/recipe/create', data, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      await axios.post('http://localhost:5000/recipe/create', data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
-      console.log(response.data);
       alert('Recipe created successfully!');
       setFormData({ name: '', description: '', tags: '', ingredients: '' });
       setFile(null);
@@ -64,61 +60,118 @@ const CreateRecipe = () => {
     }
   };
 
+  const fieldSx = {
+    '& .MuiOutlinedInput-root': { borderRadius: '8px' },
+  };
+
   return (
-    <Grid container component="main" sx={{ height: '93vh', overflow: 'hidden', position: 'relative' }}>
-      {/* Image side */}
-      <Grid item xs={false} sm={4} md={7} sx={{
-        position: 'relative',
-        backgroundImage: 'url(http://localhost:5000/images/createRecipe.png)',
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}>
-        <Typography component="h1" variant="h3" sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          zIndex: 1,
-          color: 'white',
-          opacity: fadeIn ? 0.8 : 0, // Initially hidden, then fades in
-          transition: 'opacity 2s ease', // CSS transition for opacity
-          textAlign: 'center',
-          fontSize: '6rem',
-        }}>Create New Recipe</Typography>
-      </Grid>
-      {/* Form side */}
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-        <Box sx={{ my: 8, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-            {/* Form fields */}
-            <TextField margin="normal" required fullWidth id="name" label="Recipe Name" name="name" autoComplete="name" autoFocus value={formData.name} onChange={handleChange} />
-            <TextField margin="normal" required fullWidth name="description" label="Description" type="description" id="description" autoComplete="description" multiline rows={4} value={formData.description} onChange={handleChange} />
-            <TextField margin="normal" required fullWidth name="ingredients" label="Ingredients" type="ingredients" id="ingredients" autoComplete="ingredients" value={formData.ingredients} onChange={handleChange} />
-            <TextField margin="normal" required fullWidth name="tags" label="Tags" type="tags" id="tags" autoComplete="tags" value={formData.tags} onChange={handleChange} />
-            {/* File upload feedback */}
-            {fileName && <Typography variant="subtitle1" gutterBottom>Selected file: {fileName}</Typography>}
-            {/* Image upload button */}
-            <Button variant="contained" component="label" fullWidth sx={{ mt: 3, mb: 2, color: 'white', backgroundColor: 'green', '&:hover': { backgroundColor: 'darkgreen' } }}>
-              Upload Image
-              <input type="file" hidden onChange={handleFileChange} />
-            </Button>
-            {/* Loading indicator */}
-            {loading && <CircularProgress size={24} sx={{ display: 'block', mx: 'auto', my: 2 }} />}
-            {/* Submit button */}
-            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, backgroundColor: 'green', '&:hover': { backgroundColor: 'darkgreen' } }}>Create Recipe</Button>
-            {/* Error message */}
-            {error && <Alert severity="error" sx={{ width: '100%', mt: 2 }}>{error}</Alert>}
-          </Box>
+    <div className="create-split">
+      <aside
+        className="create-split__visual"
+        style={{ backgroundImage: 'url(http://localhost:5000/images/createRecipe.png)' }}
+      >
+        <div className="create-split__veil" />
+        <h1 style={{ opacity: fadeIn ? 1 : 0 }}>Create recipe</h1>
+      </aside>
+      <section className="create-split__form">
+        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ width: '100%', maxWidth: 440 }}>
+          <Typography
+            component="h2"
+            sx={{ fontFamily: 'Fraunces, Georgia, serif', fontSize: '1.85rem', mb: 2, color: '#673ab7' }}
+          >
+            New dish details
+          </Typography>
+          <TextField margin="normal" required fullWidth id="name" label="Recipe Name" name="name" autoFocus value={formData.name} onChange={handleChange} sx={fieldSx} />
+          <TextField margin="normal" required fullWidth name="description" label="Description" multiline rows={4} value={formData.description} onChange={handleChange} sx={fieldSx} />
+          <TextField margin="normal" required fullWidth name="ingredients" label="Ingredients" value={formData.ingredients} onChange={handleChange} sx={fieldSx} />
+          <TextField margin="normal" required fullWidth name="tags" label="Tags" value={formData.tags} onChange={handleChange} sx={fieldSx} />
+          {fileName && (
+            <Typography variant="body2" sx={{ mt: 1, color: '#555' }}>
+              Selected: {fileName}
+            </Typography>
+          )}
+          <Button
+            variant="contained"
+            component="label"
+            fullWidth
+            sx={{
+              mt: 2,
+              mb: 1,
+              textTransform: 'none',
+              borderRadius: '8px',
+              backgroundColor: '#673ab7',
+              '&:hover': { backgroundColor: '#5e35b1' },
+            }}
+          >
+            Upload image
+            <input type="file" hidden onChange={handleFileChange} />
+          </Button>
+          {loading && <CircularProgress size={24} sx={{ display: 'block', mx: 'auto', my: 2 }} />}
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{
+              mt: 1,
+              mb: 2,
+              py: 1.2,
+              textTransform: 'none',
+              fontWeight: 600,
+              borderRadius: '8px',
+              backgroundColor: 'green',
+              '&:hover': { backgroundColor: 'darkgreen' },
+            }}
+          >
+            Create recipe
+          </Button>
+          {error && <Alert severity="error">{error}</Alert>}
         </Box>
-      </Grid>
-    </Grid>
+      </section>
+      <style>{`
+        .create-split {
+          display: grid;
+          grid-template-columns: 1.15fr 0.85fr;
+          min-height: calc(100vh - 64px);
+        }
+        .create-split__visual {
+          position: relative;
+          background-size: cover;
+          background-position: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 320px;
+        }
+        .create-split__veil {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, rgba(103,58,183,0.45), rgba(0,0,0,0.45));
+        }
+        .create-split__visual h1 {
+          position: relative;
+          z-index: 1;
+          font-family: Fraunces, Georgia, serif;
+          font-size: clamp(2.5rem, 5vw, 4.5rem);
+          color: #fff;
+          margin: 0;
+          padding: 1.5rem;
+          text-align: center;
+          transition: opacity 1.2s ease;
+        }
+        .create-split__form {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 2rem 1.5rem;
+          background: linear-gradient(180deg, #f3e5f5, #fff);
+        }
+        @media (max-width: 900px) {
+          .create-split { grid-template-columns: 1fr; }
+          .create-split__visual { min-height: 240px; }
+        }
+      `}</style>
+    </div>
   );
 };
 
 export default CreateRecipe;
-
-
-
-
-

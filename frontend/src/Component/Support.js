@@ -1,17 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Grid, Typography, Paper, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import { TextField, Button, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import axios from 'axios';
 import supimg from '../images/support.webp';
 import food from '../images/food.webp';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const Support = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    description: '',
-  });
+  const [formData, setFormData] = useState({ name: '', email: '', description: '' });
 
   useEffect(() => {
     document.body.style.backgroundColor = '#9fa8da';
@@ -22,10 +18,7 @@ const Support = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -34,138 +27,90 @@ const Support = () => {
       await axios.post('http://localhost:5000/email/send', {
         recipientEmail: 'cyberzerox27@gmail.com',
         subject: 'Recipe Hub - Contact Us',
-        text: `Hello Recipe Hub Team,\nBelow is a message sent by ${formData.name} with email id - ${formData.email}\n\n**${formData.description}**`
+        text: `Hello Recipe Hub Team,\nBelow is a message sent by ${formData.name} with email id - ${formData.email}\n\n**${formData.description}**`,
       });
-      console.log('Email sent successfully!');
-      setFormData({
-        name: '',
-        email: '',
-        description: '',
-      });
+      setFormData({ name: '', email: '', description: '' });
     } catch (error) {
       console.error('Error sending email:', error);
     }
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      <Grid container spacing={4}>
-        {/* Contact Form */}
-        <Grid item xs={12} md={6}>
-          <Paper style={{ padding: 20, borderRadius: 15 }}>
-            <Typography variant="poster" component="h2" align="center" gutterBottom>
-              Contact Us
-            </Typography>
+    <div className="rh-page rh-page--support">
+      <div className="rh-page__inner">
+        <h1 className="rh-section-title" style={{ color: '#283593' }}>Support</h1>
+        <p className="rh-section-sub" style={{ color: 'rgba(0,0,0,0.65)' }}>
+          Reach the team or browse quick answers
+        </p>
+
+        <div className="rh-support-grid">
+          <div className="rh-auth-card" style={{ maxWidth: 'none' }}>
+            <h2 style={{ fontFamily: 'Fraunces, Georgia, serif', fontSize: '1.6rem', margin: '0 0 1rem', textAlign: 'center' }}>
+              Contact us
+            </h2>
             <form onSubmit={handleSubmit}>
-              <TextField
-                fullWidth
-                label="Name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                margin="normal"
-                required
-              />
-              <TextField
-                fullWidth
-                label="Email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                margin="normal"
-                required
-              />
-              <TextField
-                fullWidth
-                label="Description"
-                name="description"
-                multiline
-                rows={4}
-                value={formData.description}
-                onChange={handleChange}
-                margin="normal"
-                required
-              />
+              <TextField fullWidth label="Name" name="name" value={formData.name} onChange={handleChange} margin="normal" required sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }} />
+              <TextField fullWidth label="Email" name="email" type="email" value={formData.email} onChange={handleChange} margin="normal" required sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }} />
+              <TextField fullWidth label="Description" name="description" multiline rows={4} value={formData.description} onChange={handleChange} margin="normal" required sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }} />
               <Button
                 type="submit"
                 variant="contained"
-                color="primary"
                 startIcon={<EmailIcon />}
-                style={{ marginTop: 20, backgroundColor: 'green', transition: 'background-color 0.3s, transform 0.3s', transform: 'scale(1.1)', '&:hover': { backgroundColor: 'darkgreen', transform: 'scale(1.1)' } }}
+                sx={{
+                  mt: 2,
+                  backgroundColor: 'green',
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  borderRadius: '8px',
+                  px: 2.5,
+                  '&:hover': { backgroundColor: 'darkgreen' },
+                }}
               >
-                Send
+                Send message
               </Button>
             </form>
-          </Paper>
-        </Grid>
-        
-        {/* Image */}
-        <Grid item xs={12} md={6}>
-          <img src={supimg} alt="Support" style={{ width: '100%', maxHeight: '63vh', borderRadius: 15 }} />
-        </Grid>
+          </div>
 
-        <Grid item xs={12} md={6}>
-          <img src={food} alt="Food" style={{ width: '100%', maxHeight: '63vh', borderRadius: 15 }} />
-        </Grid>
-        
-        
-        {/* FAQ */}
-        <Grid item xs={12} md={6}>
-          <Paper style={{ padding: 20, borderRadius: 15 }}>
-            <Typography variant="poster" component="h2" align="center" gutterBottom>
-              FAQ
-            </Typography>
-            <Accordion style={{ marginBottom: 20, backgroundColor: '#009688', color: 'white' }}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon style={{ color: 'white' }} />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-              >
-                <Typography variant="h6">Why choose us?</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography variant="body1">
-                  Choose Recipe Hub for its diverse, quality recipes, user-friendly interface, and vibrant community. With personalized experiences and constant 
-                  updates, Recipe Hub is your ultimate destination for culinary exploration.
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion style={{ backgroundColor: '#009688', color: 'white' }}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon style={{ color: 'white' }} />}
-                aria-controls="panel2a-content"
-                id="panel2a-header"
-              >
-                <Typography variant="h6">How do I get started?</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography variant="body1">
-                    Getting started with Recipe Hub is effortless. Simply sign up, explore our diverse collection of recipes, and save your favorites for later. 
-                    You can even contribute your own recipes and engage with a vibrant community of food enthusiasts. Choose Recipe Hub for its user-friendly interface, 
-                    quality recipes, and personalized experience. With constant updates and a commitment to culinary excellence, Recipe Hub is your go-to destination for 
-                    all things food.
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
-          </Paper>
-        </Grid>
+          <div className="rh-support-media">
+            <img src={supimg} alt="Support" />
+            <img src={food} alt="Food" />
+            <div className="rh-auth-card" style={{ maxWidth: 'none', padding: '1.25rem' }}>
+              <Typography sx={{ fontFamily: 'Fraunces, Georgia, serif', fontSize: '1.2rem', mb: 0.5 }}>Call</Typography>
+              <Typography color="text.secondary">+(617) 765-4321</Typography>
+            </div>
+          </div>
+        </div>
 
-        {/* Call Me Box */}
-        <Grid item xs={12} md={6}>
-          <Paper style={{ padding: 20, borderRadius: 15 }}>
-            <Typography variant="poster" component="h2" align="center" gutterBottom>
-              Call
-            </Typography>
-            <Typography variant="body1" align="center">
-              Phone Number: +(617)765-4321 {/* Replace with a random phone number */}
-            </Typography>
-          </Paper>
-        </Grid>
-      </Grid>
+        <div className="rh-auth-card" style={{ maxWidth: 'none', marginTop: '1.5rem' }}>
+          <h2 style={{ fontFamily: 'Fraunces, Georgia, serif', fontSize: '1.6rem', margin: '0 0 1rem', textAlign: 'center' }}>
+            FAQ
+          </h2>
+          <Accordion sx={{ backgroundColor: '#009688', color: 'white', borderRadius: '8px !important', mb: 1.5, '&:before': { display: 'none' } }}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}>
+              <Typography fontWeight={600}>Why choose us?</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>
+                Choose Recipe Hub for diverse, quality recipes, a clear interface, and a vibrant community —
+                with personalized experiences and continuous updates.
+              </Typography>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion sx={{ backgroundColor: '#009688', color: 'white', borderRadius: '8px !important', '&:before': { display: 'none' } }}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}>
+              <Typography fontWeight={600}>How do I get started?</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>
+                Sign up, explore recipes, save favourites, and contribute your own dishes. Recipe Hub is built
+                to make culinary exploration simple from day one.
+              </Typography>
+            </AccordionDetails>
+          </Accordion>
+        </div>
+      </div>
     </div>
   );
 };
 
 export default Support;
-

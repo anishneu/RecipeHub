@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Container, Typography, TextField, Button, Box, Snackbar } from '@mui/material';
-import newsImg from '../images/genshin.jpg'; 
+import { TextField, Button, Box, Snackbar } from '@mui/material';
+import newsImg from '../images/genshin.jpg';
 import { CheckCircle } from '@mui/icons-material';
 import { green } from '@mui/material/colors';
 
@@ -13,118 +13,62 @@ const News = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/news/create', { title, description });
-      console.log('News submitted:', response.data);
+      await axios.post('http://localhost:5000/news/create', { title, description });
       setTitle('');
       setDescription('');
-      setSavedMessage('Message Broadcasted Successfully');
+      setSavedMessage('Message broadcasted successfully');
     } catch (error) {
       console.error('Error submitting news:', error);
     }
   };
 
-  const renderSnowflakes = () => {
-    const snowflakes = [];
-    for (let i = 0; i < 100; i++) {
-      const size = `${Math.random() * 10 + 2}px`;
-      const style = {
-        left: `${Math.random() * 100}vw`,
-        width: size,
-        height: size,
-        backgroundColor: 'white',
-        borderRadius: '50%',
-        opacity: 0.8,
-        position: 'absolute',
-        top: '-10px',
-        pointerEvents: 'none',
-        animation: `snowfall ${Math.random() * 5 + 5}s linear ${Math.random() * 2}s infinite`
-      };
-      snowflakes.push(<Box key={i} sx={style} />);
-    }
-    return snowflakes;
-  };
-
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: '92.2vh',
-        backgroundImage: `url(${newsImg})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        position: 'relative',
-        overflow: 'hidden',
-        '@keyframes snowfall': {
-          '0%': { transform: 'translateY(0)' },
-          '100%': { transform: 'translateY(100vh)' }
-        },
-        '@keyframes fadeInScale': {
-          '0%': { opacity: 0, transform: 'scale(0.9)' },
-          '100%': { opacity: 1, transform: 'scale(1)' }
-        }
-      }}
-    >
-      {/* Snowfall container */}
-      {renderSnowflakes()}
+    <div className="rh-page--news" style={{ backgroundImage: `url(${newsImg})` }}>
+      <div className="rh-auth-card" style={{ position: 'relative', zIndex: 1, maxWidth: 480 }}>
+        <h1 style={{ fontFamily: 'Fraunces, Georgia, serif', fontSize: '1.9rem', margin: '0 0 0.35rem', textAlign: 'center', color: '#33691e' }}>
+          Broadcast news
+        </h1>
+        <p style={{ textAlign: 'center', color: '#555', margin: '0 0 1.25rem' }}>
+          Share updates and events with every chef and cook
+        </p>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            fullWidth
+            label="Title"
+            margin="normal"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
+          />
+          <TextField
+            fullWidth
+            label="Description"
+            margin="normal"
+            multiline
+            rows={4}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            sx={{
+              mt: 2,
+              py: 1.2,
+              textTransform: 'none',
+              fontWeight: 600,
+              borderRadius: '8px',
+              backgroundColor: '#33691e',
+              '&:hover': { backgroundColor: '#1b5e20' },
+            }}
+          >
+            Send
+          </Button>
+        </form>
+      </div>
 
-      {/* Section Above with Image Background */}
-      <Typography 
-        variant="h1" 
-        component="h1" 
-        gutterBottom 
-        sx={{ 
-          textAlign: 'left', 
-          color: 'white', 
-          marginTop: '80px', 
-          marginLeft: '90px', 
-          fontSize: '3rem',
-          animation: 'fadeInScale 2s ease-out'
-        }}
-      >
-        Welcome to News!
-      </Typography>
-
-      {/* White Box with Form */}
-      <Box sx={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', padding: '10px', borderRadius: '20px', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)', margin: 'auto', maxWidth: '500px', marginTop: '40px' }}>
-        <Container maxWidth="sm">
-          <Typography variant="h5" component="h2" gutterBottom sx={{ textAlign: 'center', marginBottom: '10px', marginTop: '10px' }}>
-            Share News and Updates with Everyone
-          </Typography>
-          <form onSubmit={handleSubmit}>
-            <TextField
-              fullWidth
-              label="Title"
-              variant="outlined"
-              margin="normal"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-            <TextField
-              fullWidth
-              label="Description"
-              variant="outlined"
-              margin="normal"
-              multiline
-              rows={4}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-            <Button
-              type="submit"
-              variant="contained"
-              color="success"
-              fullWidth
-              size="large"
-              sx={{ mt: 2, '&:hover': { bgcolor: 'darkgreen' }, borderRadius: '8px', marginBottom: '10px' }}
-            >
-              Send
-            </Button>
-          </form>
-        </Container>
-      </Box>
-
-      {/* Saved Message Snackbar */}
       <Snackbar
         open={!!savedMessage}
         autoHideDuration={3000}
@@ -139,16 +83,14 @@ const News = () => {
             padding: '10px 20px',
             display: 'flex',
             alignItems: 'center',
-            marginTop: '50px'
           }}
         >
           <CheckCircle sx={{ marginRight: '10px' }} />
           {savedMessage}
         </Box>
       </Snackbar>
-    </Box>
+    </div>
   );
 };
 
 export default News;
-

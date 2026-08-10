@@ -1,258 +1,273 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Typography, Grid, Box, Card, CardContent, Avatar } from '@mui/material';
-import Carousel from 'react-bootstrap/Carousel';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import image1 from '../images/kitchen.png'; 
-import image2 from '../images/currybg.jpg'; 
-import image3 from '../images/genshin.jpg'; 
+import React, { useEffect, useRef, useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import image1 from '../images/kitchen.png';
+import image2 from '../images/currybg.jpg';
+import image3 from '../images/genshin.jpg';
 import image4 from '../images/cookart.png';
-import rep1 from '../images/chicken_curry.jpg'; 
-import rep2 from '../images/biriyani.jpg';  
-import rep3 from '../images/pizza.avif'; 
-import rep4 from '../images/burger.avif'; 
-import rep5 from '../images/spring_rolls.jpg'; 
-import rep6 from '../images/biriyani.jpg'; 
-import pic1 from '../images/souma.jpg'; 
-import pic2 from '../images/girl.avif'; 
-import pic3 from '../images/chefl.webp'; 
-import pic4 from '../images/sanji.webp'; 
-import FacebookIcon from '@mui/icons-material/Facebook';
-import TwitterIcon from '@mui/icons-material/Twitter';
-import InstagramIcon from '@mui/icons-material/Instagram';
-import SwiperCore from 'swiper';
-import { Autoplay } from 'swiper/modules';
-
-SwiperCore.use([Autoplay]); // Enable Swiper Autoplay
+import rep1 from '../images/chicken_curry.jpg';
+import rep2 from '../images/biriyani.jpg';
+import rep3 from '../images/pizza.avif';
+import rep4 from '../images/burger.avif';
+import rep5 from '../images/spring_rolls.jpg';
+import rep6 from '../images/biriyani.jpg';
+import pic1 from '../images/souma.jpg';
+import pic2 from '../images/girl.avif';
+import pic3 from '../images/chefl.webp';
+import pic4 from '../images/sanji.webp';
 
 const Home = () => {
-  const [isSectionInView, setIsSectionInView] = useState(false);
-  const sectionRef = useRef(null);
-  const [fadeInText, setFadeInText] = useState(false);
+  const [welcomeVisible, setWelcomeVisible] = useState(false);
+  const [activeTrend, setActiveTrend] = useState(1);
+  const [paused, setPaused] = useState(false);
+  const [trendingVisible, setTrendingVisible] = useState(false);
+  const [teamVisible, setTeamVisible] = useState(false);
+  const welcomeRef = useRef(null);
+  const trendingRef = useRef(null);
+  const teamRef = useRef(null);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsSectionInView(true);
-          setTimeout(() => {
-            setFadeInText(true);
-          }, 1000); // Delay the text fade-in by 1000 milliseconds (1 second)
-          observer.unobserve(sectionRef.current); // Remove the observer after fading once
-        }
+  const trending = useMemo(
+    () => [
+      {
+        id: 1,
+        title: 'Chicken Curry',
+        image: rep1,
+        blurb: 'Rich spices, tender chicken, and a sauce made for rice.',
+        tag: 'Comfort',
       },
       {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.5, // Change this value as needed
-      }
-    );
+        id: 2,
+        title: 'Hyderabadi Biriyani',
+        image: rep2,
+        blurb: 'Layered rice, aromatic stock, and slow-cooked depth.',
+        tag: 'Classic',
+      },
+      {
+        id: 3,
+        title: 'Pacific Veggie Pizza',
+        image: rep3,
+        blurb: 'Crisp crust with bright vegetables and balanced heat.',
+        tag: 'Shareable',
+      },
+      {
+        id: 4,
+        title: 'Veg Burger',
+        image: rep4,
+        blurb: 'A hearty patty stacked with fresh toppings.',
+        tag: 'Quick',
+      },
+      {
+        id: 5,
+        title: 'Spring Rolls',
+        image: rep5,
+        blurb: 'Crispy wraps filled with herbs and crunch.',
+        tag: 'Starter',
+      },
+      {
+        id: 6,
+        title: 'Calcutta Biriyani',
+        image: rep6,
+        blurb: 'Subtle spice, potato, and fragrant basmati.',
+        tag: 'Regional',
+      },
+    ],
+    []
+  );
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
+  useEffect(() => {
+    const observe = (node, setter) => {
+      if (!node) return () => {};
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setter(true);
+            observer.unobserve(node);
+          }
+        },
+        { threshold: 0.18 }
+      );
+      observer.observe(node);
+      return () => observer.unobserve(node);
+    };
 
+    const cleanWelcome = observe(welcomeRef.current, setWelcomeVisible);
+    const cleanTrending = observe(trendingRef.current, setTrendingVisible);
+    const cleanTeam = observe(teamRef.current, setTeamVisible);
     return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
-      }
+      cleanWelcome();
+      cleanTrending();
+      cleanTeam();
     };
   }, []);
 
-  
-  // Sample data for carousel
-  const carouselItems = [
-    { id: 1, image: image1, caption: '"Kitchens are hard environments and they form incredibly strong characters." - Gordon Ramsay' },
-    { id: 2, image: image2, caption: 'New recipes added...' },
-    { id: 3, image: image3, caption: 'Maintainence update: *Read patch note*' },
+  useEffect(() => {
+    if (paused) return undefined;
+    const timer = setInterval(() => {
+      setActiveTrend((current) => {
+        const index = trending.findIndex((item) => item.id === current);
+        const next = trending[(index + 1) % trending.length];
+        return next.id;
+      });
+    }, 3500);
+    return () => clearInterval(timer);
+  }, [paused, trending]);
+
+  const highlights = [
+    { title: 'New recipes weekly', image: image2 },
+    { title: 'News & updates', image: image3 },
+    { title: 'Built for real kitchens', image: image1 },
   ];
 
-  // Sample data for trending recipes
-  const trendingRecipes = [
-    { id: 1, title: 'Chicken Curry', image: rep1 },
-    { id: 2, title: 'Hyderabadi Biriyani', image: rep2 },
-    { id: 3, title: 'Pacific Veggie Pizza', image: rep3 },
-    { id: 4, title: 'Veg Burger', image: rep4 },
-    { id: 5, title: 'Spring Rolls', image: rep5 },
-    { id: 6, title: 'Calcutta Biriyani', image: rep6 },
-  ];
-
-  // Sample data for team members
-  const teamMembers = [
+  const team = [
     { id: 1, name: 'Atharva A W', email: 'waranashiwar.a@northeastern.edu', image: pic3 },
     { id: 2, name: 'Anish K', email: 'kuila.a@northeastern.edu', image: pic1 },
     { id: 3, name: 'Steffi G M', email: 'lnu.ste@northeastern.edu', image: pic2 },
     { id: 4, name: 'Manikanta P K', email: 'kapalavai.m@northeastern.edu', image: pic4 },
   ];
 
+  const selected = trending.find((item) => item.id === activeTrend) || trending[0];
+
   return (
-    <>
-      <Grid container spacing={4} justifyContent="center" alignItems="center">
-        {/* Section 1: Carousel */}
-        <Grid item xs={12}>
-          <Carousel>
-            {carouselItems.map(item => (
-              <Carousel.Item key={item.id}>
-                <img style={{ height: '80vh' }} className="d-block w-100" src={item.image} alt={`Slide ${item.id}`} />
-                <Carousel.Caption>
-                  <h3>{item.caption}</h3>
-                </Carousel.Caption>
-              </Carousel.Item>
-            ))}
-          </Carousel>
-        </Grid>
+    <div className="hp">
+      <section className="hp-hero" style={{ backgroundImage: `url(${image1})` }}>
+        <div className="hp-hero__veil" />
+        <div className="site-wrap">
+          <div className="hp-hero__inner">
+            <p className="eyebrow eyebrow--warm">Recipe Hub</p>
+            <h1>Cook with intention.</h1>
+            <p className="hp-hero__lead">
+              Discover chef-crafted recipes, save favourites, and find inspiration for every kitchen.
+            </p>
+            <blockquote className="hp-hero__quote">
+              <p>“Kitchens form incredibly strong characters.”</p>
+              <cite>Gordon Ramsay</cite>
+            </blockquote>
+            <Link to="/Login" className="rh-btn rh-btn--cta">
+              Get started
+            </Link>
+          </div>
+        </div>
+      </section>
 
-        {/* Section 2: Welcoming text */}
-        <Grid item xs={12} ref={sectionRef} sx={{ backgroundColor: 'white', color: 'red', py: 4 }}>
-          <Grid container justifyContent="center" alignItems="center">
-            {/* Image box on the left */}
-            <Grid item xs={12} sm={6} md={3} style={{ height: '100%', opacity: isSectionInView ? 1 : 0, transition: 'opacity 1s ease-in-out' }}>
-              <img src={image4} alt="Image" style={{ width: '100%', height: '100%', borderRadius: '8px' }} />
-            </Grid>
-            {/* Text on the right */}
-            <Grid item xs={12} sm={6} md={8} style={{ height: '100%', opacity: fadeInText ? 1 : 0, transition: 'opacity 2s ease-in-out' }}>
-              <Typography
-                variant="h2"
-                gutterBottom
-                fontWeight="bold"
-                textAlign="center"
-                sx={{
-                  fontSize: '4rem',
-                  color: '#e57373',
-                  height: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                Welcome to Recipe Hub!
-              </Typography>
-              <Typography
-                variant="subtitle1" // Adjust the variant and style as needed
-                gutterBottom
-                textAlign="center"
-                sx={{
-                  fontSize: '1.5rem',
-                  color: '#555', // Change the color if needed
-                }}
-              >
-                Your ultimate destination for culinary inspiration.
-              </Typography>
-            </Grid>
-          </Grid>
-        </Grid>
+      <section className="hp-highlights">
+        <div className="site-wrap hp-highlights__grid">
+          {highlights.map((item) => (
+            <article key={item.title} className="hp-highlight">
+              <img src={item.image} alt="" />
+              <h3>{item.title}</h3>
+            </article>
+          ))}
+        </div>
+      </section>
 
-        {/* Section 3: Trending recipes */}
-        <Grid item xs={12} sx={{ backgroundColor: '#e57373', pb: 5 }}>
-          <Typography
-            variant="h5"
-            gutterBottom
-            fontWeight="bold"
-            textAlign="left"
-            sx={{
-              fontSize: '2rem',
-              mt: 5,
-              mb: 5,
-              ml: 7,
-              mr: 7,
-              pl: 1,
-              color: 'white',
-              backgroundColor: '#ffab40',
-            }}
-          >
-            Trending Recipes
-          </Typography>
-          <Swiper
-            spaceBetween={50}
-            slidesPerView={3}
-            slidesPerGroup={3}
-            navigation
-            pagination={{ clickable: true }}
-            scrollbar={{ draggable: true }}
-            loop={true}
-            autoplay={{ delay: 1000, disableOnInteraction: false }} // Add autoplay settings
-          >
-            {trendingRecipes.map(recipe => (
-              <SwiperSlide key={recipe.id} sx={{ mr: 2, ml: 2 }}>
-                <Grid container justifyContent="center">
-                  <Grid item xs={10} sm={6} sx={{ position: 'relative', overflow: 'hidden' }}>
-                    <img src={recipe.image} alt={recipe.title} style={{ width: '100%', borderRadius: '20px', height: 'auto' }} />
-                    <div style={{ position: 'absolute', borderRadius: '0px 0px 20px 20px', bottom: 0, left: 0, width: '100%', background: 'rgba(0, 0, 0, 0.5)', color: 'white', padding: '8px', textAlign: 'center' }}>
-                      <Typography variant="h6" fontWeight="bold">
-                        {recipe.title}
-                      </Typography>
-                    </div>
-                  </Grid>
-                </Grid>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </Grid>
+      <section
+        className={`hp-welcome ${welcomeVisible ? 'is-visible' : ''}`}
+        ref={welcomeRef}
+      >
+        <div className="site-wrap hp-welcome__grid">
+          <div className="hp-welcome__art">
+            <img src={image4} alt="Cooking illustration" />
+          </div>
+          <div className="hp-welcome__copy">
+            <p className="eyebrow eyebrow--coral">Welcome</p>
+            <h2>Your place for culinary inspiration</h2>
+            <p>
+              Explore recipes from around the world, follow chefs, and cook with a community
+              built for curiosity — from weeknight plates to weekend feasts.
+            </p>
+            <Link to="/About" className="rh-btn rh-btn--home">
+              Our story
+            </Link>
+          </div>
+        </div>
+      </section>
 
-        {/* Section 4: Meet Our Team */}
-        <Grid item xs={12} sx={{ backgroundColor: '#ef9a9a', py: 10 }}>
-          <Typography
-            variant="h4"
-            gutterBottom
-            fontWeight="bold"
-            textAlign="center"
-            sx={{
-              fontSize: '2.5rem',
-              mb: 5,
-              mt: 3,
-              color: '#c62828',
-            }}
-          >
-            Meet Our Team
-          </Typography>
-          <Grid container justifyContent="center" spacing={4}>
-            {teamMembers.map(member => (
-              <Grid item key={member.id}>
-                <Card
-                  sx={{
-                    width: 345,
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    borderRadius: '30px',
-                    transition: 'transform 0.3s',
-                    '&:hover': {
-                      transform: 'scale(1.05)',
-                    },
+      <section
+        className={`hp-trending reveal ${trendingVisible ? 'is-visible' : ''}`}
+        ref={trendingRef}
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+      >
+        <div className="site-wrap">
+          <div className="section-head section-head--light hp-trending__head-row reveal-child">
+            <div>
+              <h2>Trending now</h2>
+              <p>Click a dish to preview — auto-rotates until you interact</p>
+            </div>
+            <div className="hp-trending__dots" role="tablist" aria-label="Trending recipes">
+              {trending.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTrend === item.id}
+                  className={`hp-trending__dot ${activeTrend === item.id ? 'is-active' : ''}`}
+                  onClick={() => {
+                    setActiveTrend(item.id);
+                    setPaused(true);
                   }}
-                >
-                  <CardContent style={{ backgroundColor: '#bdbdbd', flex: '1 0 auto' }}>
-                    <Avatar alt={member.name} src={member.image} sx={{ width: 200, height: 200, margin: 'auto' }} />
-                  </CardContent>
-                  <CardContent style={{ textAlign: 'center' }}>
-                    <Typography variant="h5" gutterBottom>{member.name}</Typography>
-                    <Typography variant="body1">{member.email}</Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </Grid>
-      </Grid>
+                  aria-label={item.title}
+                />
+              ))}
+            </div>
+          </div>
 
-      {/* Footer */}
-      <Box sx={{ backgroundColor: '#000', color: '#fff', py: 4 }}>
-        <Typography variant="h6" align="center" gutterBottom>
-          Follow us on:
-        </Typography>
-        <Grid container justifyContent="center" alignItems="center">
-          <a href="https://www.facebook.com">
-            <FacebookIcon sx={{ fontSize: 30, mr: 2 }} />
-          </a>
-          <a href="https://www.twitter.com">
-            <TwitterIcon sx={{ fontSize: 30, mr: 2 }} />
-          </a>
-          <a href="https://www.instagram.com">
-            <InstagramIcon sx={{ fontSize: 30 }} />
-          </a>
-        </Grid>
-      </Box>
-    </>
+          <div className="hp-trend-stage reveal-child" style={{ transitionDelay: '120ms' }}>
+            <div className="hp-trend-feature">
+              <img key={selected.id} src={selected.image} alt={selected.title} />
+              <div className="hp-trend-feature__copy">
+                <span className="hp-trend-feature__tag">{selected.tag}</span>
+                <h3>{selected.title}</h3>
+                <p>{selected.blurb}</p>
+                <Link to="/Login" className="rh-btn rh-btn--ghost">
+                  Cook this
+                </Link>
+              </div>
+            </div>
+
+            <div className="hp-trend-rail" role="list">
+              {trending.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  role="listitem"
+                  className={`hp-trend-thumb ${activeTrend === item.id ? 'is-active' : ''}`}
+                  onClick={() => {
+                    setActiveTrend(item.id);
+                    setPaused(true);
+                  }}
+                  onFocus={() => setPaused(true)}
+                >
+                  <img src={item.image} alt="" />
+                  <span>{item.title}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className={`hp-team reveal ${teamVisible ? 'is-visible' : ''}`} ref={teamRef}>
+        <div className="site-wrap">
+          <div className="section-head reveal-child">
+            <h2>Meet the team</h2>
+            <p>The people behind Recipe Hub</p>
+          </div>
+          <div className="hp-team__row">
+            {team.map((member, index) => (
+              <div
+                key={member.id}
+                className="hp-team__person reveal-child"
+                style={{ transitionDelay: `${100 + index * 80}ms` }}
+              >
+                <img src={member.image} alt={member.name} />
+                <h3>{member.name}</h3>
+                <p title={member.email}>{member.email}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
   );
 };
 

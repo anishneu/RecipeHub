@@ -1,143 +1,98 @@
-import React, { useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Link, useNavigate, Outlet } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-//import { jwtDecode } from 'jwt-decode'; 
-import { Outlet } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
-import { logout } from '../actions/authActions'; // Import logout action
-/*
-const getUserRoleFromToken = () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-        try {
-            const decoded = jwtDecode(token);
-            return decoded.user.role;
-        } catch (error) {
-            console.error('Error decoding token:', error);
-            return null;
-        }
-    }
-    return null;
-};*/
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from '../actions/authActions';
+import Footer from './Footer';
 
 function Layout() {
-    // const [userRole, setUserRole] = useState(getUserRoleFromToken());
-    const navigate = useNavigate(); // Initialize navigate function
-    const dispatch = useDispatch(); // Initialize dispatch function
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const userType = useSelector((state) => state.auth.userType);
 
-    // Get isLoggedIn state from Redux store
-    const isLoggedIn = useSelector(state => state.auth.loggedIn);
-    console.log(isLoggedIn)
-    // Get userType state from Redux store
-    const userType = useSelector(state => state.auth.userType);
+  const handleLogout = () => {
+    dispatch(logout());
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
 
-    useEffect(() => {
-        // const handleStorageChange = () => {
-        //     setUserRole(getUserRoleFromToken());
-        // };
+  return (
+    <div className="rh-layout">
+      <Navbar className="rh-navbar" variant="dark" expand="lg">
+        <Container fluid className="site-wrap site-wrap--nav">
+          <Navbar.Brand as={Link} to="/">
+            Recipe Hub
+          </Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto">
+              {!userType && <Nav.Link as={Link} to="Home">Home</Nav.Link>}
+              {userType === 'chef' && <Nav.Link as={Link} to="Chef">Home</Nav.Link>}
+              {userType === 'user' && <Nav.Link as={Link} to="User">Home</Nav.Link>}
+              {userType === 'admin' && <Nav.Link as={Link} to="Admin">Home</Nav.Link>}
 
-        // window.addEventListener('storageChange', handleStorageChange);
-        // setUserRole(getUserRoleFromToken());
+              {userType !== 'admin' && <Nav.Link as={Link} to="About">About</Nav.Link>}
 
-        // return () => {
-        //     window.removeEventListener('storageChange', handleStorageChange);
-        // };
-    }, []);
+              {userType === 'chef' && (
+                <>
+                  <Nav.Link as={Link} to="/createrecipe">Create</Nav.Link>
+                  <Nav.Link as={Link} to="/viewrecipes">View</Nav.Link>
+                  <Nav.Link as={Link} to="/UpdateRecipes">Manage</Nav.Link>
+                  <NavDropdown title="Account" id="chef-nav-dropdown">
+                    <NavDropdown.Item as={Link} to="/editprofile">Edit Profile</NavDropdown.Item>
+                    <NavDropdown.Item as={Link} to="/ViewNews">News & Updates</NavDropdown.Item>
+                    <NavDropdown.Item as={Link} to="/Support">Support</NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
+                  </NavDropdown>
+                </>
+              )}
 
-    const handleLogout = () => {
-        dispatch(logout());
-        localStorage.removeItem('token');
-        // window.dispatchEvent(new Event('storageChange'));
-        navigate('/login');
-    };
+              {userType === 'user' && (
+                <>
+                  <Nav.Link as={Link} to="RecipeList">Recipes</Nav.Link>
+                  <Nav.Link as={Link} to="SavedRecipes">Favourites</Nav.Link>
+                  <NavDropdown title="Account" id="user-nav-dropdown">
+                    <NavDropdown.Item as={Link} to="/editprofile">Edit Profile</NavDropdown.Item>
+                    <NavDropdown.Item as={Link} to="/ViewNews">News & Updates</NavDropdown.Item>
+                    <NavDropdown.Item as={Link} to="/Support">Support</NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
+                  </NavDropdown>
+                </>
+              )}
 
-    return (
-        <>
-            <Navbar bg="dark" variant="dark" expand="lg">
-                <Container>
-                    <Navbar.Brand as={Link} to="/">Recipe Hub</Navbar.Brand>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className="me-auto">
-                            {!userType && (
-                                <Nav.Link as={Link} to="Home">Home</Nav.Link>
-                            )}
+              {userType === 'admin' && (
+                <>
+                  <Nav.Link as={Link} to="/AllPages">Manage</Nav.Link>
+                  <Nav.Link as={Link} to="/News">News</Nav.Link>
+                  <NavDropdown title="Account" id="admin-nav-dropdown">
+                    <NavDropdown.Item as={Link} to="/editprofile">Edit Profile</NavDropdown.Item>
+                    <NavDropdown.Item as={Link} to="/Support">Support</NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
+                  </NavDropdown>
+                </>
+              )}
+            </Nav>
 
-                            {userType === 'chef' && (
-                                <Nav.Link as={Link} to="Chef">Home</Nav.Link>
-                            )}
-
-                            {userType === 'user' && (
-                                <Nav.Link as={Link} to="User">Home</Nav.Link>
-                            )}
-
-                            {userType === 'admin' && (
-                                <Nav.Link as={Link} to="Admin">Home</Nav.Link>
-                            )}
-
-                            {userType !== 'admin' && (
-                                <Nav.Link as={Link} to="About">About</Nav.Link>
-                            )}
-
-                            {userType === 'chef' && (
-                                <>
-                                    <Nav.Link as={Link} to="/createrecipe">Create</Nav.Link>
-                                    <Nav.Link as={Link} to="/viewrecipes">View</Nav.Link>
-                                    <Nav.Link as={Link} to="/UpdateRecipes">Manage</Nav.Link>
-                                    <NavDropdown title="MyAccount" id="basic-nav-dropdown">
-                                        <NavDropdown.Item as={Link} to="/editprofile">Edit Profile</NavDropdown.Item>
-                                        <NavDropdown.Item as={Link} to="/ViewNews">News & Updates</NavDropdown.Item>
-                                        <NavDropdown.Item as={Link} to="/Support">Support</NavDropdown.Item>
-                                        <NavDropdown.Divider />
-                                        <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
-                                    </NavDropdown>
-                                </>
-                            )}
-
-                            {userType === 'user' && (
-                                <>
-                                    <Nav.Link as={Link} to="RecipeList">Recipes</Nav.Link>
-                                    <Nav.Link as={Link} to="SavedRecipes">Favourites</Nav.Link>
-                                    <NavDropdown title="MyAccount" id="basic-nav-dropdown">
-                                        <NavDropdown.Item as={Link} to="/editprofile">Edit Profile</NavDropdown.Item>
-                                        <NavDropdown.Item as={Link} to="/ViewNews">News & Updates</NavDropdown.Item>
-                                        <NavDropdown.Item as={Link} to="/Support">Support</NavDropdown.Item>
-                                        <NavDropdown.Divider />
-                                        <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
-                                    </NavDropdown>
-                                </>
-                            )}
-
-                            {userType === 'admin' && (
-                                <>
-                                    <Nav.Link as={Link} to="/AllPages">Manage</Nav.Link>
-                                    <Nav.Link as={Link} to="/News">News</Nav.Link>
-                                    <NavDropdown title="MyAccount" id="basic-nav-dropdown">
-                                        <NavDropdown.Item as={Link} to="/editprofile">Edit Profile</NavDropdown.Item>
-                                        <NavDropdown.Item as={Link} to="/Support">Support</NavDropdown.Item>
-                                        <NavDropdown.Divider />
-                                        <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
-                                    </NavDropdown>
-                                </>
-                            )}
-                        </Nav>
-
-                        {!userType && (
-                            <Nav>
-                                <Nav.Link as={Link} to="/login">Login</Nav.Link>
-                            </Nav>
-                        )}
-                    </Navbar.Collapse>
-                </Container>
-            </Navbar>
-            <Outlet />
-        </>
-    );
+            {!userType && (
+              <Nav>
+                <Nav.Link as={Link} to="/login">Login</Nav.Link>
+              </Nav>
+            )}
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+      <main className="rh-layout__main">
+        <Outlet />
+      </main>
+      <Footer />
+    </div>
+  );
 }
 
 export default Layout;
-
-

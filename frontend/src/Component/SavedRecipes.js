@@ -1,110 +1,112 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Typography, Card, CardHeader, CardMedia, CardContent, CardActions, IconButton, Collapse, Box } from '@mui/material';
+import { Typography, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 
 const SavedRecipes = () => {
-    const [savedRecipes, setSavedRecipes] = useState([]);
-    const [userId, setUserId] = useState('');
-    const [expandedCardId, setExpandedCardId] = useState(null);
+  const [savedRecipes, setSavedRecipes] = useState([]);
+  const [userId, setUserId] = useState('');
+  const [expandedCardId, setExpandedCardId] = useState(null);
 
-    useEffect(() => {
-        document.body.style.backgroundColor = '#ffb74d';
-        return () => {
-            document.body.style.backgroundColor = '';
-        };
-    }, []);
-
-    useEffect(() => {
-        // Fetch the user ID from localStorage
-        const storedUserId = localStorage.getItem('userId');
-        setUserId(storedUserId);
-
-        if (storedUserId) {
-            // If user ID is available, fetch saved recipes
-            fetchSavedRecipes(storedUserId);
-        }
-    }, []);
-
-    const fetchSavedRecipes = async (userId) => {
-        try {
-            const response = await axios.get(`http://localhost:5000/user/getSavedRecipes/${userId}`);
-            setSavedRecipes(response.data);
-        } catch (error) {
-            console.error('Error fetching saved recipes:', error);
-        }
+  useEffect(() => {
+    document.body.style.backgroundColor = '#ffb74d';
+    return () => {
+      document.body.style.backgroundColor = '';
     };
+  }, []);
 
-    const handleDeleteRecipe = async (recipeId) => {
-        try {
-            const response = await axios.delete(`http://localhost:5000/user/deleteSavedRecipe/${userId}`, {
-                data: { recipeId } // Send recipeId in the request body
-            });
-            console.log(response.data.message);
-            // After successful deletion, fetch updated list of saved recipes
-            fetchSavedRecipes(userId);
-        } catch (error) {
-            console.error('Error deleting recipe:', error);
-        }
-    };
+  useEffect(() => {
+    const storedUserId = localStorage.getItem('userId');
+    setUserId(storedUserId);
+    if (storedUserId) fetchSavedRecipes(storedUserId);
+  }, []);
 
-    return (
-        <Grid container spacing={2} sx={{ padding: '30px' }}>
-            <Grid item xs={12}>
-                <Typography variant="poster" component="h1" gutterBottom sx={{ textAlign: 'center', color: 'white', marginTop: '30px', marginBottom: '40px' }}>
-                    Saved Recipes
-                </Typography>
-            </Grid>
-            <Grid item xs={12}>
-                <Box bgcolor="#ffe0b2" p={2} borderRadius={5}>
-                    <Grid container spacing={2}>
-                        {savedRecipes.length > 0 ? (
-                            savedRecipes.map((recipe) => (
-                                <Grid item xs={12} sm={6} md={3} key={recipe.recipeId}>
-                                    <Card sx={{ maxWidth: 360, borderRadius: 7 }}>
-                                        <CardHeader
-                                            title={recipe.name}
-                                            subheader={`Recipe ID: ${recipe.recipeId}`}
-                                        />
-                                        <CardMedia
-                                            component="img"
-                                            height="195"
-                                            image={`http://localhost:5000/recipe/images/${recipe.creatorId}/${recipe.imagePath}`}
-                                            alt={recipe.name}
-                                            onClick={() => setExpandedCardId(expandedCardId === recipe.recipeId ? null : recipe.recipeId)}
-                                            style={{ cursor: 'pointer' }}              
-                                        />
-                                        <Collapse in={expandedCardId === recipe.recipeId} timeout="auto" unmountOnExit>
-                                            <CardContent>
-                                                <Typography variant="body2" color="text.secondary">
-                                                    {recipe.description}
-                                                </Typography>
-                                                <Typography paragraph>Ingredients:</Typography>
-                                                <ul>
-                                                    {recipe.ingredients.map((ingredient, index) => (
-                                                        <li key={index}>{ingredient}</li>
-                                                    ))}
-                                                </ul>
-                                            </CardContent>
-                                        </Collapse>
-                                        <CardActions disableSpacing>
-                                            <IconButton aria-label="delete" onClick={() => handleDeleteRecipe(recipe.recipeId)}>
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        </CardActions>
-                                    </Card>
-                                </Grid>
-                            ))
-                        ) : (
-                            <Grid item xs={12}>
-                                <Typography variant="body1">No saved recipes yet.</Typography>
-                            </Grid>
-                        )}
-                    </Grid>
-                </Box>
-            </Grid>
-        </Grid>
-    );
+  const fetchSavedRecipes = async (id) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/user/getSavedRecipes/${id}`);
+      setSavedRecipes(response.data);
+    } catch (error) {
+      console.error('Error fetching saved recipes:', error);
+    }
+  };
+
+  const handleDeleteRecipe = async (recipeId) => {
+    try {
+      await axios.delete(`http://localhost:5000/user/deleteSavedRecipe/${userId}`, {
+        data: { recipeId },
+      });
+      fetchSavedRecipes(userId);
+    } catch (error) {
+      console.error('Error deleting recipe:', error);
+    }
+  };
+
+  return (
+    <div className="rh-page rh-page--user">
+      <div className="rh-page__inner">
+        <h1 className="rh-section-title">Saved recipes</h1>
+        <p className="rh-section-sub">Your favourites, ready whenever you are</p>
+
+        <div className="rh-panel rh-panel--user">
+          {savedRecipes.length > 0 ? (
+            <div className="rh-tile-grid">
+              {savedRecipes.map((recipe) => (
+                <article key={recipe.recipeId} className="rh-tile">
+                  <div
+                    className="rh-tile__media"
+                    onClick={() =>
+                      setExpandedCardId(expandedCardId === recipe.recipeId ? null : recipe.recipeId)
+                    }
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        setExpandedCardId(expandedCardId === recipe.recipeId ? null : recipe.recipeId);
+                      }
+                    }}
+                  >
+                    <img
+                      src={`http://localhost:5000/recipe/images/${recipe.creatorId}/${recipe.imagePath}`}
+                      alt={recipe.name}
+                    />
+                  </div>
+                  <div className="rh-tile__body">
+                    <h3 className="rh-tile__title">{recipe.name}</h3>
+                    <div className="rh-tile__actions">
+                      <IconButton
+                        aria-label="delete"
+                        onClick={() => handleDeleteRecipe(recipe.recipeId)}
+                        size="small"
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </div>
+                  </div>
+                  {expandedCardId === recipe.recipeId && (
+                    <div className="rh-tile__details">
+                      <p>{recipe.description}</p>
+                      <Typography component="p" sx={{ mt: 1, mb: 0.5, fontWeight: 600, color: '#1a1a1a' }}>
+                        Ingredients
+                      </Typography>
+                      <ul>
+                        {recipe.ingredients.map((ingredient, index) => (
+                          <li key={index}>{ingredient}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </article>
+              ))}
+            </div>
+          ) : (
+            <Typography variant="body1" sx={{ textAlign: 'center', py: 4 }}>
+              No saved recipes yet.
+            </Typography>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default SavedRecipes;

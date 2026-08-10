@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Container, Typography, Card, CardContent, Grid, Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, Pagination } from '@mui/material';
+import {
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Pagination,
+} from '@mui/material';
 import MailIcon from '@mui/icons-material/Mail';
 
 const ViewNews = () => {
@@ -9,7 +17,7 @@ const ViewNews = () => {
   const [page, setPage] = useState(1);
 
   const limit = 4;
-  const totalPageCount = Math.ceil(newsList.length / limit);
+  const totalPageCount = Math.ceil(newsList.length / limit) || 1;
 
   useEffect(() => {
     document.body.style.backgroundColor = '#e57373';
@@ -30,61 +38,66 @@ const ViewNews = () => {
     fetchNews();
   }, []);
 
-  const handleOpenDialog = (news) => {
-    setSelectedNews(news);
-  };
-
-  const handleCloseDialog = () => {
-    setSelectedNews(null);
-  };
-
-  const handlePageChange = (event, value) => {
-    setPage(value);
-  };
-
   const startIndex = (page - 1) * limit;
-  const endIndex = page * limit;
-  const paginatedNewsList = newsList.slice(startIndex, endIndex);
+  const paginatedNewsList = newsList.slice(startIndex, startIndex + limit);
 
   return (
-    <Container maxWidth="md">
-      <Typography variant="h4" component="h1" gutterBottom sx={{ textAlign: 'center', color: 'white', marginTop: '30px', marginBottom: '40px' }}>
-        News & Updates <MailIcon />
-      </Typography>
-      <Box sx={{ backgroundColor: '#ffcdd2', padding: '20px', borderRadius: '10px', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}>
-        <Grid container spacing={2}>
-          {paginatedNewsList.map(news => (
-            <Grid item xs={12} key={news._id}>
-              <Card elevation={3} sx={{ maxHeight: '60px', borderRadius: '10px' }}>
-                <CardContent onClick={() => handleOpenDialog(news)} sx={{ paddingTop: '15px', paddingBottom: '15px' }}>
-                  <Typography variant="h6" sx={{fontSize: "1.2rem"}} gutterBottom>
-                    {news.title}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-        <Box sx={{ textAlign: 'center', marginTop: '20px', display: 'flex', justifyContent: 'center' }}>
-          <Pagination count={totalPageCount} page={page} onChange={handlePageChange} color="success" />
-        </Box>
-      </Box>
-      <Dialog open={selectedNews !== null} onClose={handleCloseDialog}>
-        <DialogTitle>{selectedNews?.title}</DialogTitle>
+    <div className="rh-page rh-page--home">
+      <div className="rh-page__inner" style={{ maxWidth: 720 }}>
+        <h1 className="rh-section-title">
+          News &amp; updates <MailIcon sx={{ verticalAlign: 'middle', ml: 0.5 }} />
+        </h1>
+        <p className="rh-section-sub">Announcements from the Recipe Hub team</p>
+
+        <div className="rh-panel" style={{ background: '#ffcdd2' }}>
+          {paginatedNewsList.length > 0 ? (
+            <div style={{ display: 'grid', gap: '0.75rem' }}>
+              {paginatedNewsList.map((news) => (
+                <button
+                  key={news._id}
+                  type="button"
+                  onClick={() => setSelectedNews(news)}
+                  style={{
+                    textAlign: 'left',
+                    border: 'none',
+                    background: '#fff',
+                    borderRadius: 10,
+                    padding: '1rem 1.15rem',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
+                    fontFamily: 'Fraunces, Georgia, serif',
+                    fontSize: '1.15rem',
+                    color: '#1a1a1a',
+                  }}
+                >
+                  {news.title}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <Typography align="center" sx={{ py: 3 }}>
+              No news yet.
+            </Typography>
+          )}
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1.25rem' }}>
+            <Pagination count={totalPageCount} page={page} onChange={(_, value) => setPage(value)} color="success" />
+          </div>
+        </div>
+      </div>
+
+      <Dialog open={selectedNews !== null} onClose={() => setSelectedNews(null)}>
+        <DialogTitle sx={{ fontFamily: 'Fraunces, Georgia, serif' }}>{selectedNews?.title}</DialogTitle>
         <DialogContent>
-          <Typography variant="body1">
-            {selectedNews?.description}
-          </Typography>
+          <Typography>{selectedNews?.description}</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} color="success">
+          <Button onClick={() => setSelectedNews(null)} sx={{ textTransform: 'none' }}>
             Close
           </Button>
         </DialogActions>
       </Dialog>
-    </Container>
+    </div>
   );
 };
 
 export default ViewNews;
- 

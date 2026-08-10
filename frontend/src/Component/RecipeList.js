@@ -1,371 +1,319 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Typography, Chip, IconButton, Avatar, Button, Modal, Box, Snackbar } from '@mui/material';
-import { Card, CardHeader, CardMedia, CardContent, CardActions } from '@mui/material';
+import { Typography, Chip, IconButton, Button, Modal, Box, Snackbar } from '@mui/material';
 import { green } from '@mui/material/colors';
-import { MoreVert, Save, Star, CheckCircle } from '@mui/icons-material';
+import { Save, Star, CheckCircle } from '@mui/icons-material';
 import axios from 'axios';
-import { FormControl, InputGroup, Collapse } from 'react-bootstrap';
 import Rating from '@mui/material/Rating';
 
 const RecipeList = () => {
-    const [inputValue, setInputValue] = useState('');
-    const [keywords, setKeywords] = useState([]);
-    const [recipes, setRecipes] = useState([]);
-    const [filteredRecipes, setFilteredRecipes] = useState([]);
-    const [recentSearches, setRecentSearches] = useState([]);
-    const [userId, setUserId] = useState('');
-    const [expandedCardId, setExpandedCardId] = useState(null);
-    const [selectedRecipe, setSelectedRecipe] = useState(null);
-    const [rating, setRating] = useState('');
-    const [showRatingModal, setShowRatingModal] = useState(false);
-    const [savedMessage, setSavedMessage] = useState('');
+  const [inputValue, setInputValue] = useState('');
+  const [keywords, setKeywords] = useState([]);
+  const [recipes, setRecipes] = useState([]);
+  const [filteredRecipes, setFilteredRecipes] = useState([]);
+  const [recentSearches, setRecentSearches] = useState([]);
+  const [userId, setUserId] = useState('');
+  const [expandedCardId, setExpandedCardId] = useState(null);
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [rating, setRating] = useState('');
+  const [showRatingModal, setShowRatingModal] = useState(false);
+  const [savedMessage, setSavedMessage] = useState('');
 
-    useEffect(() => {
-        fetchRecipes();
-        fetchUserId();
-    }, []);
+  useEffect(() => {
+    fetchRecipes();
+    fetchUserId();
+  }, []);
 
-    useEffect(() => {
-        document.body.style.backgroundColor = '#ffb74d';
-        return () => {
-            document.body.style.backgroundColor = '';
-        };
-    }, []);
-
-    const fetchRecipes = async () => {
-        try {
-            const response = await axios.get('http://localhost:5000/recipe/getAll');
-            setRecipes(response.data);
-            setFilteredRecipes(response.data);
-        } catch (error) {
-            console.error('Error fetching recipes:', error);
-        }
+  useEffect(() => {
+    document.body.style.backgroundColor = '#ffb74d';
+    return () => {
+      document.body.style.backgroundColor = '';
     };
+  }, []);
 
-    const fetchUserId = async () => {
-        try {
-            const userId = localStorage.getItem('userId');
-            if (!userId) {
-                console.error('User ID not found in localStorage');
-                return;
-            }
-            const response = await axios.get(`http://localhost:5000/user/getId/${userId}`);
-            console.log("Response data:", response.data);
-            if (response.data && response.data.userId) {
-                setUserId(response.data.userId);
-            } else {
-                console.error("User ID not found in response");
-            }
-        } catch (error) {
-            console.error('Error fetching user ID:', error);
-        }
-    };
+  const fetchRecipes = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/recipe/getAll');
+      setRecipes(response.data);
+      setFilteredRecipes(response.data);
+    } catch (error) {
+      console.error('Error fetching recipes:', error);
+    }
+  };
 
-    const updateRecentSearches = (newSearch) => {
-        if (!recentSearches.includes(newSearch)) {
-            const updatedSearches = [newSearch, ...recentSearches].slice(0, 10);
-            setRecentSearches(updatedSearches);
-        }
-    };
+  const fetchUserId = async () => {
+    try {
+      const storedUserId = localStorage.getItem('userId');
+      if (!storedUserId) return;
+      const response = await axios.get(`http://localhost:5000/user/getId/${storedUserId}`);
+      if (response.data && response.data.userId) {
+        setUserId(response.data.userId);
+      }
+    } catch (error) {
+      console.error('Error fetching user ID:', error);
+    }
+  };
 
-    const handleInputChange = (event) => {
-        setInputValue(event.target.value);
-    };
+  const updateRecentSearches = (newSearch) => {
+    if (!recentSearches.includes(newSearch)) {
+      setRecentSearches([newSearch, ...recentSearches].slice(0, 10));
+    }
+  };
 
-    const handleInputKeyDown = (event) => {
-        if (event.key === 'Enter' && inputValue) {
-            performSearch();
-        }
-    };
+  const handleInputChange = (event) => setInputValue(event.target.value);
 
-    const performSearch = () => {
-        const keywordToAdd = inputValue.trim().toLowerCase();
-        if (keywordToAdd && !keywords.includes(keywordToAdd)) {
-            const newKeywords = [...keywords, keywordToAdd];
-            setKeywords(newKeywords);
-            filterRecipesWithKeywords(newKeywords);
-            updateRecentSearches(keywordToAdd);
-        }
-        setInputValue('');
-    };
+  const handleInputKeyDown = (event) => {
+    if (event.key === 'Enter' && inputValue) performSearch();
+  };
 
-    const handleKeywordDelete = (keywordToDelete) => () => {
-        const newKeywords = keywords.filter(keyword => keyword !== keywordToDelete);
-        setKeywords(newKeywords);
-        filterRecipesWithKeywords(newKeywords);
-    };
+  const performSearch = () => {
+    const keywordToAdd = inputValue.trim().toLowerCase();
+    if (keywordToAdd && !keywords.includes(keywordToAdd)) {
+      const newKeywords = [...keywords, keywordToAdd];
+      setKeywords(newKeywords);
+      filterRecipesWithKeywords(newKeywords);
+      updateRecentSearches(keywordToAdd);
+    }
+    setInputValue('');
+  };
 
-    const filterRecipesWithKeywords = (keywords) => {
-        if (keywords.length === 0) {
-            setFilteredRecipes(recipes);
-        } else {
-            const filteredData = recipes.filter(recipe => {
-                const isMatch = isRecipeMatch(recipe, keywords);
-                return isMatch;
-            });
-            setFilteredRecipes(filteredData);
-        }
-    };
+  const handleKeywordDelete = (keywordToDelete) => () => {
+    const newKeywords = keywords.filter((keyword) => keyword !== keywordToDelete);
+    setKeywords(newKeywords);
+    filterRecipesWithKeywords(newKeywords);
+  };
 
-    const isRecipeMatch = (recipe, keywords) => {
-        const recipeText = `${recipe.name.toLowerCase()} ${recipe.description.toLowerCase()}`;
-        return keywords.every(keyword => {
-            const match = recipeText.includes(keyword.toLowerCase());
-            return match;
-        });
-    };
+  const filterRecipesWithKeywords = (nextKeywords) => {
+    if (nextKeywords.length === 0) {
+      setFilteredRecipes(recipes);
+    } else {
+      setFilteredRecipes(recipes.filter((recipe) => isRecipeMatch(recipe, nextKeywords)));
+    }
+  };
 
-    const handleRecentSearchClick = (search) => {
-        if (!keywords.includes(search)) {
-            const newKeywords = [...keywords, search];
-            setKeywords(newKeywords);
-            filterRecipesWithKeywords(newKeywords);
-            setInputValue('');
-        } else {
-            const filteredKeywords = keywords.filter(keyword => keyword !== search);
-            setKeywords(filteredKeywords);
-            filterRecipesWithKeywords(filteredKeywords);
-            setInputValue('');
-        }
-    };
+  const isRecipeMatch = (recipe, nextKeywords) => {
+    const recipeText = `${recipe.name.toLowerCase()} ${recipe.description.toLowerCase()}`;
+    return nextKeywords.every((keyword) => recipeText.includes(keyword.toLowerCase()));
+  };
 
-    const handleSaveRecipe = async (recipeId) => {
-        try {
-            if (!userId) {
-                console.error('User ID not available');
-                return;
-            }
-            console.log('Saving recipe for user ID:', userId);
-            const response = await axios.post(`http://localhost:5000/user/saveRecipe/${userId}`, { recipeId });
-            console.log("Save recipe response:", response.data);
-            setSavedMessage('Recipe has been saved');
-        } catch (error) {
-            console.error('Error saving recipe:', error);
-        }
-    };
+  const handleRecentSearchClick = (search) => {
+    if (!keywords.includes(search)) {
+      const newKeywords = [...keywords, search];
+      setKeywords(newKeywords);
+      filterRecipesWithKeywords(newKeywords);
+    } else {
+      const filteredKeywords = keywords.filter((keyword) => keyword !== search);
+      setKeywords(filteredKeywords);
+      filterRecipesWithKeywords(filteredKeywords);
+    }
+    setInputValue('');
+  };
 
-    const handleOpenRatingModal = (recipe) => {
-        setSelectedRecipe(recipe);
-        setShowRatingModal(true);
-    };
+  const handleSaveRecipe = async (recipeId) => {
+    try {
+      if (!userId) return;
+      await axios.post(`http://localhost:5000/user/saveRecipe/${userId}`, { recipeId });
+      setSavedMessage('Recipe has been saved');
+    } catch (error) {
+      console.error('Error saving recipe:', error);
+    }
+  };
 
-    const handleCloseRatingModal = () => {
-        setSelectedRecipe(null);
-        setShowRatingModal(false);
-    };
+  const handleOpenRatingModal = (recipe) => {
+    setSelectedRecipe(recipe);
+    setShowRatingModal(true);
+  };
 
-    const handleRatingChange = (event) => {
-        setRating(event.target.value);
-    };
+  const handleCloseRatingModal = () => {
+    setSelectedRecipe(null);
+    setShowRatingModal(false);
+  };
 
-    const handleRateRecipe = async () => {
-        try {
-            if (!userId || !selectedRecipe) {
-                console.error('User ID or selected recipe not available');
-                return;
-            }
-            console.log('Rating recipe for user ID:', userId);
-            const response = await axios.put(`http://localhost:5000/recipe/addRating/${selectedRecipe.recipeId}`, { rating });
-            console.log("Rate recipe response:", response.data);
-            // Refresh recipes after rating
-            fetchRecipes();
-            handleCloseRatingModal();
-        } catch (error) {
-            console.error('Error rating recipe:', error);
-        }
-    };
-    const calculateAverageRating = (ratings) => {
-        if (ratings.length === 0) {
-            return 4.2; // Default rating if no ratings are available
-        }
+  const handleRatingChange = (event) => setRating(event.target.value);
 
-        const total = ratings.reduce((acc, curr) => acc + curr, 0);
-        if (total === 0) {
-            return 4.2; // Default rating if the total is zero
-        }
+  const handleRateRecipe = async () => {
+    try {
+      if (!userId || !selectedRecipe) return;
+      await axios.put(`http://localhost:5000/recipe/addRating/${selectedRecipe.recipeId}`, { rating });
+      fetchRecipes();
+      handleCloseRatingModal();
+    } catch (error) {
+      console.error('Error rating recipe:', error);
+    }
+  };
 
-        return (total / ratings.length).toFixed(1); // One decimal place
-    };
+  const calculateAverageRating = (ratings) => {
+    if (!ratings || ratings.length === 0) return 4.2;
+    const total = ratings.reduce((acc, curr) => acc + curr, 0);
+    if (total === 0) return 4.2;
+    return (total / ratings.length).toFixed(1);
+  };
 
-    return (
-        <Grid container spacing={2} sx={{ padding: '30px' }}>
-            <Grid item xs={12}>
-                <Typography variant="poster" component="h1" gutterBottom sx={{ textAlign: 'center', color: 'white', marginTop: '30px', marginBottom: '40px' }}>
-                    Recipe List
-                </Typography>
-                <InputGroup className="mb-3" style={{ height: '50px' }}>
-                    <FormControl
-                        placeholder="Search Keywords"
-                        aria-label="Search Keywords"
-                        aria-describedby="basic-addon2"
-                        value={inputValue}
-                        onChange={handleInputChange}
-                        onKeyDown={handleInputKeyDown}
-                        style={{ borderRadius: '15px 0 0 15px', width: 'calc(100% - 130px)', height: '100%' }}
-                    />
-                    <Button
-                        variant="outline-secondary"
-                        id="button-addon2"
-                        onClick={performSearch}
-                        sx={{
-                            backgroundColor: '#009688',
-                            color: 'white',
-                            borderRadius: '0 15px 15px 0',
-                            '&:hover': {
-                                backgroundColor: '#004d40',
-                                transform: 'scale(1.05)',
-                            },
-                        }}
-                    >
-                        Search
-                    </Button>
-                </InputGroup>
-                <Typography variant="body2" style={{ marginTop: '10px', marginBottom: '10px', color: 'white' }}>Recent Searches:</Typography>
-                <div style={{ display: 'flex', flexWrap: 'wrap', marginBottom: '10px' }}>
-                    {recentSearches.map((search, index) => (
-                        <Chip
-                            key={index}
-                            label={search}
-                            onClick={() => handleRecentSearchClick(search)}
-                            style={{ margin: '5px', backgroundColor: 'white', color: 'black' }}
-                        />
-                    ))}
-                </div>
-                <div style={{ margin: '10px 0' }}>
-                    {keywords.map((keyword, index) => (
-                        <Chip
-                            key={index}
-                            label={keyword}
-                            onDelete={handleKeywordDelete(keyword)}
-                            color="primary"
-                            style={{ margin: '5px', backgroundColor: '#66bb6a', color: 'white' }}
-                        />
-                    ))}
-                </div>
-            </Grid>
-            {filteredRecipes.length > 0 ? (
-                <Grid item xs={12}>
-                    <Box bgcolor="#ffe0b2" p={2} borderRadius={7}>
-                        <Grid container spacing={2}>
-                            {filteredRecipes.map((recipe) => (
-                                <Grid item xs={12} sm={6} md={3} key={recipe.recipeId}>
-                                    <Card sx={{ maxWidth: 360, borderRadius: 7 }}>
-                                        <CardHeader
-                                            avatar={
-                                                <Avatar sx={{ bgcolor: '#ef6c00' }} aria-label="recipe">
-                                                    {recipe.name.charAt(0)}
-                                                </Avatar>
-                                            }
-                                            action={
-                                                <IconButton aria-label="settings">
-                                                    <MoreVert />
-                                                </IconButton>
-                                            }
-                                            title={recipe.name}
-                                            subheader={`Recipe ID: ${recipe.recipeId}`}
-                                        />
-                                        <CardMedia
-                                            component="img"
-                                            height="195"
-                                            image={`http://localhost:5000/recipe/images/${recipe.creatorId}/${recipe.imagePath}`}
-                                            alt={recipe.name}
-                                            onClick={() => setExpandedCardId(expandedCardId === recipe.recipeId ? null : recipe.recipeId)}
-                                            style={{ cursor: 'pointer' }}
-                                        />
-                                        <Collapse in={expandedCardId === recipe.recipeId} timeout={300} unmountOnExit>
-                                            <CardContent>
-                                                <Typography variant="body2" color="text.secondary">
-                                                    {recipe.description}
-                                                </Typography>
-                                                <Typography paragraph>Ingredients:</Typography>
-                                                <ul>
-                                                    {recipe.ingredients.map((ingredient, index) => (
-                                                        <li key={index}>{ingredient}</li>
-                                                    ))}
-                                                </ul>
-                                            </CardContent>
-                                        </Collapse>
-                                        <CardActions disableSpacing>
-                                            <IconButton aria-label="save" onClick={() => handleSaveRecipe(recipe.recipeId)}>
-                                                <Save />
-                                            </IconButton>
-                                            <Typography h5>
-                                                {calculateAverageRating(recipe.ratings)}
-                                            </Typography>
-                                            <IconButton aria-label="rate" onClick={() => handleOpenRatingModal(recipe)}>
-                                                <Star />
-                                            </IconButton>
-                                        </CardActions>
-                                    </Card>
-                                </Grid>
-                            ))}
-                        </Grid>
-                    </Box>
-                </Grid>
-            ) : (
-                <Grid item xs={12}>
-                    <Typography variant="body1">No Recipes match your search criteria.</Typography>
-                </Grid>
-            )}
+  return (
+    <div className="rh-page rh-page--user">
+      <div className="rh-page__inner">
+        <h1 className="rh-section-title">Recipe list</h1>
+        <p className="rh-section-sub">Search by keyword, save favourites, and rate what you cook</p>
 
-            {/* Rating Modal */}
-            <Modal
-                open={showRatingModal}
-                onClose={handleCloseRatingModal}
-                aria-labelledby="rating-modal-title"
-                aria-describedby="rating-modal-description"
-            >
-                <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: 'white', borderRadius: '10px', padding: '20px' }}>
-                    <Typography variant="h5" id="rating-modal-title" gutterBottom>
-                        Rate Recipe
-                    </Typography>
-                    <Rating
-                        name="recipe-rating"
-                        value={rating}
-                        precision={0.5} // Optional: allows half-star ratings
-                        onChange={handleRatingChange}
-                    />
-                    <br></br>
-                    <Button
-                        variant="contained"
-                        onClick={() => handleRateRecipe(rating)}
-                        sx={{
-                            marginLeft: '20px',
-                            backgroundColor: 'green',
-                            '&:hover': {
-                                backgroundColor: 'darkgreen',
-                                transform: 'scale(1)',
-                            },
-                        }}
-                    >
-                        Submit
-                    </Button>
-                </div>
-            </Modal>
+        <div className="rh-search">
+          <input
+            placeholder="Search keywords"
+            aria-label="Search Keywords"
+            value={inputValue}
+            onChange={handleInputChange}
+            onKeyDown={handleInputKeyDown}
+          />
+          <button type="button" onClick={performSearch}>
+            Search
+          </button>
+        </div>
 
-            {/* Saved Message Snackbar */}
-            <Snackbar
-                open={!!savedMessage}
-                autoHideDuration={3000}
-                onClose={() => setSavedMessage('')}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-            >
-                <Box
-                    sx={{
-                        backgroundColor: green[600],
-                        color: '#fff',
-                        borderRadius: '10px',
-                        padding: '10px 20px',
-                        display: 'flex',
-                        alignItems: 'center',
+        {recentSearches.length > 0 && (
+          <>
+            <Typography variant="body2" sx={{ textAlign: 'center', color: 'white', mb: 1 }}>
+              Recent searches
+            </Typography>
+            <div className="rh-chips">
+              {recentSearches.map((search) => (
+                <Chip
+                  key={search}
+                  label={search}
+                  onClick={() => handleRecentSearchClick(search)}
+                  sx={{ backgroundColor: 'white', color: 'black' }}
+                />
+              ))}
+            </div>
+          </>
+        )}
+
+        {keywords.length > 0 && (
+          <div className="rh-chips">
+            {keywords.map((keyword) => (
+              <Chip
+                key={keyword}
+                label={keyword}
+                onDelete={handleKeywordDelete(keyword)}
+                sx={{ backgroundColor: '#66bb6a', color: 'white' }}
+              />
+            ))}
+          </div>
+        )}
+
+        {filteredRecipes.length > 0 ? (
+          <div className="rh-panel rh-panel--user" style={{ marginTop: '1.5rem' }}>
+            <div className="rh-tile-grid">
+              {filteredRecipes.map((recipe) => (
+                <article key={recipe.recipeId} className="rh-tile">
+                  <div
+                    className="rh-tile__media"
+                    onClick={() =>
+                      setExpandedCardId(expandedCardId === recipe.recipeId ? null : recipe.recipeId)
+                    }
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        setExpandedCardId(expandedCardId === recipe.recipeId ? null : recipe.recipeId);
+                      }
                     }}
-                >
-                    <CheckCircle sx={{ marginRight: '10px' }} />
-                    {savedMessage}
-                </Box>
-            </Snackbar>
-        </Grid>
-    );
+                  >
+                    <img
+                      src={`http://localhost:5000/recipe/images/${recipe.creatorId}/${recipe.imagePath}`}
+                      alt={recipe.name}
+                    />
+                  </div>
+                  <div className="rh-tile__body">
+                    <h3 className="rh-tile__title">{recipe.name}</h3>
+                    <p className="rh-tile__meta">Rating {calculateAverageRating(recipe.ratings)}</p>
+                    <div className="rh-tile__actions">
+                      <IconButton aria-label="save" onClick={() => handleSaveRecipe(recipe.recipeId)} size="small">
+                        <Save />
+                      </IconButton>
+                      <IconButton aria-label="rate" onClick={() => handleOpenRatingModal(recipe)} size="small">
+                        <Star />
+                      </IconButton>
+                    </div>
+                  </div>
+                  {expandedCardId === recipe.recipeId && (
+                    <div className="rh-tile__details">
+                      <p>{recipe.description}</p>
+                      <Typography component="p" sx={{ mt: 1, mb: 0.5, fontWeight: 600, color: '#1a1a1a' }}>
+                        Ingredients
+                      </Typography>
+                      <ul>
+                        {recipe.ingredients.map((ingredient, index) => (
+                          <li key={index}>{ingredient}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </article>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <Typography variant="body1" sx={{ textAlign: 'center', color: 'white', mt: 3 }}>
+            No recipes match your search criteria.
+          </Typography>
+        )}
+      </div>
+
+      <Modal open={showRatingModal} onClose={handleCloseRatingModal}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: 'white',
+            borderRadius: '14px',
+            padding: '1.75rem',
+            minWidth: 280,
+            boxShadow: '0 14px 36px rgba(0,0,0,0.12)',
+          }}
+        >
+          <Typography variant="h5" gutterBottom sx={{ fontFamily: 'Fraunces, Georgia, serif' }}>
+            Rate recipe
+          </Typography>
+          <Rating name="recipe-rating" value={Number(rating) || 0} precision={0.5} onChange={handleRatingChange} />
+          <Button
+            variant="contained"
+            onClick={handleRateRecipe}
+            sx={{
+              mt: 2,
+              display: 'block',
+              backgroundColor: 'green',
+              textTransform: 'none',
+              borderRadius: '8px',
+              '&:hover': { backgroundColor: 'darkgreen' },
+            }}
+          >
+            Submit
+          </Button>
+        </Box>
+      </Modal>
+
+      <Snackbar
+        open={!!savedMessage}
+        autoHideDuration={3000}
+        onClose={() => setSavedMessage('')}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Box
+          sx={{
+            backgroundColor: green[600],
+            color: '#fff',
+            borderRadius: '10px',
+            padding: '10px 20px',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <CheckCircle sx={{ marginRight: '10px' }} />
+          {savedMessage}
+        </Box>
+      </Snackbar>
+    </div>
+  );
 };
 
 export default RecipeList;

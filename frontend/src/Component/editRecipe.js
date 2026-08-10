@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Box, TextField, Button, Typography, CircularProgress, Container } from '@mui/material';
+import { Box, TextField, Button, Typography, CircularProgress } from '@mui/material';
 
 const EditRecipe = () => {
-
   const { id } = useParams();
   const navigate = useNavigate();
   const [recipe, setRecipe] = useState({
@@ -18,7 +17,6 @@ const EditRecipe = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-
     document.body.style.backgroundColor = '#d7ccc8';
     return () => {
       document.body.style.backgroundColor = '';
@@ -30,10 +28,9 @@ const EditRecipe = () => {
       setLoading(true);
       try {
         const response = await axios.get(`http://localhost:5000/recipe/recipeId/${id}`);
-        console.log(response.data); // Log fetched recipe details
         setRecipe(response.data);
       } catch (err) {
-        console.error('Failed to fetch recipe details:',  err.response ? err.response.data : err);
+        console.error('Failed to fetch recipe details:', err.response ? err.response.data : err);
         setError('Failed to fetch recipe details');
       } finally {
         setLoading(false);
@@ -41,11 +38,10 @@ const EditRecipe = () => {
     };
     fetchRecipe();
   }, [id]);
-  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setRecipe(prevState => ({
+    setRecipe((prevState) => ({
       ...prevState,
       [name]: value,
     }));
@@ -55,8 +51,8 @@ const EditRecipe = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.put(`http://localhost:5000/recipe/edit`, recipe); // Assuming the same endpoint for update
-      navigate('/ViewRecipes'); // Adjust the route as necessary
+      await axios.put(`http://localhost:5000/recipe/edit`, recipe);
+      navigate('/ViewRecipes');
     } catch (err) {
       console.error('Failed to update recipe:', err);
       setError('Failed to update recipe');
@@ -65,75 +61,77 @@ const EditRecipe = () => {
     }
   };
 
-  if (loading) return <CircularProgress />;
-  if (error) return <Typography color="error">{error}</Typography>;
+  if (loading && !recipe.name) {
+    return (
+      <div className="rh-page rh-page--edit" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <CircularProgress />
+      </div>
+    );
+  }
+
+  if (error && !recipe.name) {
+    return (
+      <div className="rh-page rh-page--edit">
+        <Typography color="error" align="center">
+          {error}
+        </Typography>
+      </div>
+    );
+  }
 
   return (
-    <Container component="main" maxWidth="sm">
-      <Box
-        sx={{
-          marginTop: 5,
-          padding: 3,
-          borderRadius: 4,
-          backgroundColor: 'white',
-          boxShadow: 4,
-        }}
-      >
-        <Typography variant="poster" component="h1" gutterBottom sx={{ textAlign: 'center', color: 'black', marginTop: '60px', marginBottom: '40px' }}>
-            Edit Recipe
-        </Typography>
-        {/* Input fields for recipe details */}
-        <TextField
-          fullWidth
-          label="Name"
-          name="name"
-          value={recipe.name}
-          onChange={handleChange}
-          margin="normal"
-        />
-        <TextField
-          fullWidth
-          label="Description"
-          name="description"
-          value={recipe.description}
-          onChange={handleChange}
-          margin="normal"
-        />
-        <TextField
-          fullWidth
-          label="Tags (comma-separated)"
-          name="tags"
-          value={Array.isArray(recipe.tags) ? recipe.tags.join(', ') : recipe.tags || ''}
-          onChange={(e) => setRecipe({...recipe, tags: e.target.value.split(',')})}
-          margin="normal"
-        />
-        <TextField
-          fullWidth
-          label="Ingredients (comma-separated)"
-          name="ingredients"
-          value={Array.isArray(recipe.ingredients) ? recipe.ingredients.join(', ') : ''}
-          onChange={(e) => setRecipe({...recipe, ingredients: e.target.value.split(',')})}
-          margin="normal"
-        />
-        {/* Add more fields as necessary */}
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          sx={{ mt: 3, mb: 2, backgroundColor: "success.main", '&:hover': { backgroundColor: 'darkgreen' }}}
-          onClick={handleSubmit}
-        >
-          Update
-        </Button>
-        {error && (
-          <Typography color="error" sx={{ mt: 2 }}>
-            {error}
-          </Typography>
-        )}
-      </Box>
-    </Container>
+    <div className="rh-page rh-page--edit">
+      <div className="rh-auth-card" style={{ maxWidth: 520 }}>
+        <h1 style={{ fontFamily: 'Fraunces, Georgia, serif', fontSize: '1.85rem', textAlign: 'center', margin: '0 0 1rem' }}>
+          Edit recipe
+        </h1>
+        <Box component="form" onSubmit={handleSubmit}>
+          <TextField fullWidth label="Name" name="name" value={recipe.name} onChange={handleChange} margin="normal" sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }} />
+          <TextField fullWidth label="Description" name="description" value={recipe.description} onChange={handleChange} margin="normal" multiline rows={3} sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }} />
+          <TextField
+            fullWidth
+            label="Tags (comma-separated)"
+            name="tags"
+            value={Array.isArray(recipe.tags) ? recipe.tags.join(', ') : recipe.tags || ''}
+            onChange={(e) => setRecipe({ ...recipe, tags: e.target.value.split(',') })}
+            margin="normal"
+            sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
+          />
+          <TextField
+            fullWidth
+            label="Ingredients (comma-separated)"
+            name="ingredients"
+            value={Array.isArray(recipe.ingredients) ? recipe.ingredients.join(', ') : ''}
+            onChange={(e) => setRecipe({ ...recipe, ingredients: e.target.value.split(',') })}
+            margin="normal"
+            sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{
+              mt: 3,
+              mb: 1,
+              py: 1.2,
+              textTransform: 'none',
+              fontWeight: 600,
+              borderRadius: '8px',
+              backgroundColor: 'success.main',
+              '&:hover': { backgroundColor: 'darkgreen' },
+            }}
+          >
+            Update
+          </Button>
+          {error && (
+            <Typography color="error" sx={{ mt: 1 }}>
+              {error}
+            </Typography>
+          )}
+        </Box>
+      </div>
+    </div>
   );
 };
 
 export default EditRecipe;
-

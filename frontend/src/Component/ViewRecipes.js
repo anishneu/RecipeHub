@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import {
   Typography,
-  Box,
   CircularProgress,
-  Card,
-  CardContent,
-  CardMedia,
   Button,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogContentText,
   DialogActions,
-  Grid,
 } from '@mui/material';
 import axios from 'axios';
 
@@ -22,7 +17,7 @@ const ViewRecipes = () => {
   const [error, setError] = useState('');
   const [open, setOpen] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
-  const [cardContentMinWidth, setCardContentMinWidth] = useState('700px'); // Initial minWidth
+  const [expandedId, setExpandedId] = useState(null);
 
   const userId = localStorage.getItem('userId');
 
@@ -38,7 +33,6 @@ const ViewRecipes = () => {
       setLoading(true);
       try {
         const response = await axios.get(`http://localhost:5000/recipe/creatorId/${userId}`);
-        console.log(response.data);
         setRecipes(response.data);
       } catch (err) {
         setError('Failed to fetch recipes. Please try again later.');
@@ -48,127 +42,112 @@ const ViewRecipes = () => {
       }
     };
 
-    if (userId) {
-      fetchRecipes();
-    }
+    if (userId) fetchRecipes();
   }, [userId]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      // Dynamically adjust minWidth based on viewport width
-      if (window.innerWidth < 700) {
-        setCardContentMinWidth('100%');
-      } else {
-        setCardContentMinWidth('700px');
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    // Initial call to handleResize to set minWidth on component mount
-    handleResize();
-
-    // Cleanup the event listener
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
 
   const handleOpen = (recipe) => {
     setSelectedRecipe(recipe);
     setOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const handleClose = () => setOpen(false);
 
   const calculateAverageRating = (ratings) => {
-    if (ratings.length === 0) {
-      return 4.2; // Default rating if no ratings are available
-    }
-
+    if (!ratings || ratings.length === 0) return 4.2;
     const total = ratings.reduce((acc, curr) => acc + curr, 0);
-    if (total === 0) {
-      return 4.2; // Default rating if the total is zero
-    }
-
-    return (total / ratings.length).toFixed(1); // One decimal place
+    if (total === 0) return 4.2;
+    return (total / ratings.length).toFixed(1);
   };
 
   return (
-    <Box textAlign="center" sx={{ mt: 8, mb: 5, ml: 14, mr: 14, minHeight: '100vh' }}>
-      <Typography variant="poster" component="h1" gutterBottom sx={{ textAlign: 'center', color: 'white', marginTop: '30px', marginBottom: '40px' }}>
-        Your Recipes
-      </Typography>
-      {loading ? (
-        <CircularProgress color="inherit" />
-      ) : error ? (
-        <Typography variant="h6" color="error" sx={{ my: 5 }}>
-          {error}
-        </Typography>
-      ) : recipes.length > 0 ? (
-        <Box bgcolor="#d1c4e9" p={2} borderRadius={7}>
-          <Grid container spacing={2}>
-            {recipes.map((recipe) => (
-              <Grid item xs={12} key={recipe._id}>
-                <Card sx={{ borderRadius: '20px', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', height: '160px', position: 'relative' }}>
-                  <CardMedia
-                    component="img"
-                    height="100%" // Adjust the height of the image to fill the card
-                    width="auto" // Let the width adjust to maintain aspect ratio
-                    image={`http://localhost:5000/recipe/images/${recipe.creatorId}/${recipe.imagePath}`}
-                    alt={recipe.name}
-                    sx={{
-                      objectFit: 'cover', // Stretch the image to cover the entire space
-                      objectPosition: 'center', // Align the image to the left and top edges
-                      borderRadius: '20px 0 0 20px', // Adjust border radius to match card's border radius
-                      minWidth: '100px', // Ensure the image maintains minimum width
+    <div className="rh-page rh-page--chef">
+      <div className="rh-page__inner">
+        <h1 className="rh-section-title">Your recipes</h1>
+        <p className="rh-section-sub">Dishes you have published on Recipe Hub</p>
+
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '3rem' }}>
+            <CircularProgress sx={{ color: '#fff' }} />
+          </div>
+        ) : error ? (
+          <Typography variant="h6" color="error" sx={{ textAlign: 'center', my: 5 }}>
+            {error}
+          </Typography>
+        ) : recipes.length > 0 ? (
+          <div className="rh-panel rh-panel--chef">
+            <div className="rh-tile-grid">
+              {recipes.map((recipe) => (
+                <article key={recipe._id || recipe.recipeId} className="rh-tile">
+                  <div
+                    className="rh-tile__media"
+                    onClick={() =>
+                      setExpandedId(expandedId === recipe.recipeId ? null : recipe.recipeId)
+                    }
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        setExpandedId(expandedId === recipe.recipeId ? null : recipe.recipeId);
+                      }
                     }}
-                  />
-                  <Box sx={{ position: 'absolute', top: 0, left: 0, bgcolor: 'rgba(0, 0, 0, 0.5)', color: 'yellow', padding: '4px', borderTopLeftRadius: '20px' }}>
-                    <Typography variant="body2">
-                      Rating: {calculateAverageRating(recipe.ratings)}
-                    </Typography>
-                  </Box>
-                  <CardContent sx={{ flex: '1', minWidth: cardContentMinWidth }}>
-                    <Typography gutterBottom variant="h5" component="div">
-                      {recipe.name}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 2 }}>
-                      Ingredients: {recipe.ingredients.join(', ')}
-                    </Typography>
-                  </CardContent>
-                  <Button size="small" color="success" sx={{ position: 'absolute', bottom: '5px', right: '5px' }} onClick={() => handleOpen(recipe)}>
-                    Show More
-                  </Button>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
-      ) : (
-        <Typography variant="h4" sx={{ my: 5 }}>
-          No Recipes Found
-        </Typography>
-      )}
+                  >
+                    <img
+                      src={`http://localhost:5000/recipe/images/${recipe.creatorId}/${recipe.imagePath}`}
+                      alt={recipe.name}
+                    />
+                  </div>
+                  <div className="rh-tile__body">
+                    <h3 className="rh-tile__title">{recipe.name}</h3>
+                    <p className="rh-tile__meta">Rating {calculateAverageRating(recipe.ratings)}</p>
+                    <div className="rh-tile__actions">
+                      <Button
+                        size="small"
+                        onClick={() => handleOpen(recipe)}
+                        sx={{
+                          textTransform: 'none',
+                          color: '#673ab7',
+                          fontWeight: 600,
+                          fontFamily: 'Outfit, sans-serif',
+                        }}
+                      >
+                        Show more
+                      </Button>
+                    </div>
+                  </div>
+                  {expandedId === recipe.recipeId && (
+                    <div className="rh-tile__details">
+                      <p>{recipe.ingredients?.join(', ')}</p>
+                    </div>
+                  )}
+                </article>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <Typography variant="h5" sx={{ textAlign: 'center', color: 'white', my: 5, fontFamily: 'Fraunces, Georgia, serif' }}>
+            No recipes found
+          </Typography>
+        )}
+      </div>
+
       {selectedRecipe && (
         <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-          <DialogTitle>{selectedRecipe.name}</DialogTitle>
+          <DialogTitle sx={{ fontFamily: 'Fraunces, Georgia, serif' }}>{selectedRecipe.name}</DialogTitle>
           <DialogContent>
-            <DialogContentText>
+            <DialogContentText component="div">
               <Typography gutterBottom>Ingredients: {selectedRecipe.ingredients.join(', ')}</Typography>
               <Typography gutterBottom>Description: {selectedRecipe.description}</Typography>
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Close</Button>
+            <Button onClick={handleClose} sx={{ textTransform: 'none' }}>
+              Close
+            </Button>
           </DialogActions>
         </Dialog>
       )}
-    </Box>
+    </div>
   );
 };
 
 export default ViewRecipes;
-
