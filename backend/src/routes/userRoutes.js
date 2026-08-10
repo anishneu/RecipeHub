@@ -12,10 +12,20 @@ const { userMessage } = require('../services/userMail');
 
 // Data Validation Middleware
 const validateUserData = [
-  body('email').isEmail(),
-  body('fullName').isLength({ min: 1 }),
-  body('password').isStrongPassword(),
-  body('role').isLength({ min: 1 }),
+  body('email').isEmail().withMessage('Enter a valid email address'),
+  body('fullName').isLength({ min: 1 }).withMessage('Name is required'),
+  body('password')
+    .isStrongPassword({
+      minLength: 8,
+      minLowercase: 1,
+      minUppercase: 1,
+      minNumbers: 1,
+      minSymbols: 1,
+    })
+    .withMessage(
+      'Password must be at least 8 characters and include uppercase, lowercase, a number, and a symbol'
+    ),
+  body('role').isIn(['user', 'chef']).withMessage('Select a role'),
 ];
 
 

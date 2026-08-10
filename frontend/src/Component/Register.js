@@ -41,12 +41,24 @@ const Register = () => {
       return;
     }
 
+    if (!role) {
+      setError('Please select a role');
+      setLoading(false);
+      return;
+    }
+
     try {
       await axios.post(`${API_BASE}/user/create`, { fullName, email, password, role });
       navigate('/Login');
-      setError('Registration functionality not implemented yet.');
     } catch (err) {
-      setError('An unexpected error occurred. Please try again later.');
+      const data = err.response?.data;
+      if (data?.errors?.length) {
+        setError(data.errors.map((e) => e.msg).join('. '));
+      } else if (data?.message) {
+        setError(data.message);
+      } else {
+        setError('An unexpected error occurred. Please try again later.');
+      }
     }
     setLoading(false);
   };
@@ -87,6 +99,7 @@ const Register = () => {
             value={password}
             sx={textFieldStyles}
             onChange={(e) => setPassword(e.target.value)}
+            helperText="Min 8 chars, with uppercase, lowercase, number, and symbol"
           />
           <TextField
             type="password"
