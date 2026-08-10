@@ -2,13 +2,17 @@
 
 Full-stack, role-based recipe discovery and publishing platform.
 
+<img src="assets/recipehub-landing.png" alt="Recipe Hub landing page" width="800"/>
+
 Recipe Hub lets three kinds of users — general users, chefs, and admins — interact with a shared recipe catalog differently: general users discover and save recipes, chefs publish and manage their own, and the platform layers in live culinary news alongside seasonal UI theming. The API is documented with Swagger rather than left for the frontend to reverse-engineer, and auth is JWT-based with bcrypt-hashed credentials rather than rolled by hand.
 
-**Stack:** React 18 · Node.js / Express · MongoDB (Mongoose) · JWT auth
+**Stack:** React 18 · Node.js / Express · MongoDB Atlas (Mongoose) · JWT auth
 
 **Author:** Anish Kuila
 
-**Status:** Feature-complete, not currently deployed live
+**Live demo:** [anish-recipehub.netlify.app](https://anish-recipehub.netlify.app/Home)
+
+**Status:** Feature-complete, deployed live
 
 ## Table of contents
 - [What it does](#what-it-does)
@@ -45,6 +49,7 @@ Recipes can be queried by tag, by ingredient list, or by minimum rating — not 
 | Validation | express-validator |
 | Docs | swagger-jsdoc + swagger-ui-express |
 | Email | Nodemailer |
+| Hosting | Netlify (frontend) · Render (backend) · MongoDB Atlas (database) |
 
 ## Scale
 
@@ -58,7 +63,7 @@ Counted directly from the route files:
 
 ## Install
 
-Requires Node 18+ and a MongoDB instance (local or Atlas).
+Requires Node 18+ and a MongoDB instance (local, or a MongoDB Atlas cluster for production-parity).
 
 ```bash
 git clone https://github.com/anishneu/RecipeHub.git
@@ -83,6 +88,8 @@ cd backend && npm start        # runs on the port set in .env
 # Frontend
 cd frontend && npm start       # CRA dev server on :3000
 ```
+
+Or skip local setup entirely and try the live deployment: **[anish-recipehub.netlify.app](https://anish-recipehub.netlify.app/Home)**
 
 API docs (Swagger UI) are served once the backend is running — see `backend/src/routes` for the mount path.
 
@@ -113,11 +120,5 @@ RecipeHub/
 
 ## Limitations
 
-- No live deployment currently — runs locally or would need a host (Render/Railway) + MongoDB Atlas.
 - No automated test suite.
 - No CI/CD pipeline configured.
-
-
----
-
-This README aims to provide a detailed overview of the Recipe Hub project, covering its functionalities, user roles, navigation, and support systems. Whether you are a developer, a chef, or just someone interested in culinary arts, Recipe Hub offers a space to collaborate, learn, and share in the joy of cooking.
