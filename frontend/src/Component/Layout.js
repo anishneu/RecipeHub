@@ -29,20 +29,18 @@ function Layout() {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              {!userType && <Nav.Link as={Link} to="Home">Home</Nav.Link>}
-              {userType === 'chef' && <Nav.Link as={Link} to="Chef">Home</Nav.Link>}
-              {userType === 'user' && <Nav.Link as={Link} to="User">Home</Nav.Link>}
-              {userType === 'admin' && <Nav.Link as={Link} to="Admin">Home</Nav.Link>}
+              <Nav.Link as={Link} to="/Home">Home</Nav.Link>
 
-              {userType !== 'admin' && <Nav.Link as={Link} to="About">About</Nav.Link>}
+              {userType !== 'admin' && <Nav.Link as={Link} to="/About">About</Nav.Link>}
 
               {userType === 'chef' && (
                 <>
-                  <Nav.Link as={Link} to="/createrecipe">Create</Nav.Link>
-                  <Nav.Link as={Link} to="/viewrecipes">View</Nav.Link>
+                  <Nav.Link as={Link} to="/CreateRecipe">Create</Nav.Link>
+                  <Nav.Link as={Link} to="/ViewRecipes">View</Nav.Link>
                   <Nav.Link as={Link} to="/UpdateRecipes">Manage</Nav.Link>
                   <NavDropdown title="Account" id="chef-nav-dropdown">
-                    <NavDropdown.Item as={Link} to="/editprofile">Edit Profile</NavDropdown.Item>
+                    <NavDropdown.Item as={Link} to="/Chef">Chef workspace</NavDropdown.Item>
+                    <NavDropdown.Item as={Link} to="/editProfile">Edit Profile</NavDropdown.Item>
                     <NavDropdown.Item as={Link} to="/ViewNews">News & Updates</NavDropdown.Item>
                     <NavDropdown.Item as={Link} to="/Support">Support</NavDropdown.Item>
                     <NavDropdown.Divider />
@@ -53,10 +51,11 @@ function Layout() {
 
               {userType === 'user' && (
                 <>
-                  <Nav.Link as={Link} to="RecipeList">Recipes</Nav.Link>
-                  <Nav.Link as={Link} to="SavedRecipes">Favourites</Nav.Link>
+                  <Nav.Link as={Link} to="/RecipeList">Recipes</Nav.Link>
+                  <Nav.Link as={Link} to="/SavedRecipes">Favourites</Nav.Link>
                   <NavDropdown title="Account" id="user-nav-dropdown">
-                    <NavDropdown.Item as={Link} to="/editprofile">Edit Profile</NavDropdown.Item>
+                    <NavDropdown.Item as={Link} to="/User">My kitchen</NavDropdown.Item>
+                    <NavDropdown.Item as={Link} to="/editProfile">Edit Profile</NavDropdown.Item>
                     <NavDropdown.Item as={Link} to="/ViewNews">News & Updates</NavDropdown.Item>
                     <NavDropdown.Item as={Link} to="/Support">Support</NavDropdown.Item>
                     <NavDropdown.Divider />
@@ -70,7 +69,8 @@ function Layout() {
                   <Nav.Link as={Link} to="/AllPages">Manage</Nav.Link>
                   <Nav.Link as={Link} to="/News">News</Nav.Link>
                   <NavDropdown title="Account" id="admin-nav-dropdown">
-                    <NavDropdown.Item as={Link} to="/editprofile">Edit Profile</NavDropdown.Item>
+                    <NavDropdown.Item as={Link} to="/Admin">Admin home</NavDropdown.Item>
+                    <NavDropdown.Item as={Link} to="/editProfile">Edit Profile</NavDropdown.Item>
                     <NavDropdown.Item as={Link} to="/Support">Support</NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>

@@ -4,22 +4,14 @@ import { useSelector } from 'react-redux';
 import foodHero from '../images/food.webp';
 
 const AboutPage = () => {
-  const { loggedIn, userType } = useSelector((state) => state.auth);
+  const { loggedIn } = useSelector((state) => state.auth);
+
 
   const secondaryCta = (() => {
     if (!loggedIn) {
       return { to: '/Register', label: 'Join the hub' };
     }
-    if (userType === 'chef') {
-      return { to: '/Chef', label: 'Chef workspace' };
-    }
-    if (userType === 'admin') {
-      return { to: '/Admin', label: 'Admin panel' };
-    }
-    if (userType === 'user') {
-      return { to: '/User', label: 'My kitchen' };
-    }
-    return { to: '/Home', label: 'Continue cooking' };
+    return { to: '/Home', label: 'Back to cooking' };
   })();
 
   return (

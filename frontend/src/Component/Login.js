@@ -44,19 +44,7 @@ const Login = () => {
         localStorage.setItem('userId', user.userId);
         const userRole = user.role;
         dispatch(loginSuccess(response.data.token, userRole));
-        switch (userRole) {
-          case 'user':
-            navigate('/User');
-            break;
-          case 'chef':
-            navigate('/Chef');
-            break;
-          case 'admin':
-            navigate('/Admin');
-            break;
-          default:
-            navigate('/');
-        }
+        navigate('/Home');
       } else {
         setError('Invalid username or password.');
         dispatch(loginFailure('Invalid username or password.'));

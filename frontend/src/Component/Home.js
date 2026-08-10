@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { jwtDecode } from 'jwt-decode';
 import image1 from '../images/kitchen.png';
 import image2 from '../images/currybg.jpg';
 import image3 from '../images/genshin.jpg';
@@ -17,20 +18,30 @@ import pic3 from '../images/chefl.webp';
 import pic4 from '../images/sanji.webp';
 
 const Home = () => {
-  const { loggedIn, userType } = useSelector((state) => state.auth);
-  const role = loggedIn ? userType : 'guest';
+  const { loggedIn, userType, token } = useSelector((state) => state.auth);
+  const role = loggedIn ? userType || 'guest' : 'guest';
+
+  const displayName = useMemo(() => {
+    const authToken = token || localStorage.getItem('token');
+    if (!authToken) return '';
+    try {
+      const decoded = jwtDecode(authToken);
+      return decoded?.user?.fullName || '';
+    } catch {
+      return '';
+    }
+  }, [token]);
+
+  const firstName = displayName.trim().split(/\s+/)[0] || '';
 
   const [welcomeVisible, setWelcomeVisible] = useState(false);
   const [activeTrend, setActiveTrend] = useState(1);
   const [paused, setPaused] = useState(false);
   const [trendingVisible, setTrendingVisible] = useState(false);
   const [teamVisible, setTeamVisible] = useState(false);
-  const [railVisible, setRailVisible] = useState(false);
-  const [activeTool, setActiveTool] = useState(0);
   const welcomeRef = useRef(null);
   const trendingRef = useRef(null);
   const teamRef = useRef(null);
-  const railRef = useRef(null);
 
   const trending = useMemo(
     () => [
@@ -84,48 +95,20 @@ const Home = () => {
     if (role === 'chef') {
       return {
         eyebrow: 'Chef desk',
-        title: 'Publish what you cook.',
-        lead: 'Build your cookbook, refine dishes, and keep your kitchen board moving.',
-        quote: '“A recipe has no soul. You, as the cook, must bring soul to the recipe.”',
-        cite: 'Thomas Keller',
+        title: firstName ? `Welcome, ${firstName}!` : 'Welcome, Chef!',
+        lead: 'Create dishes, refine your collection, and keep your kitchen board moving.',
         primary: { to: '/CreateRecipe', label: 'Create a recipe' },
         secondary: { to: '/ViewRecipes', label: 'My dishes' },
         cookLink: '/CreateRecipe',
         cookLabel: 'Craft something similar',
-        welcomeTitle: 'Your chef workspace starts here',
+        welcomeTitle: 'Your recipes, your craft',
         welcomeBody:
-          'Sketch a new plate, revisit published recipes, and keep your collection sharp for the community.',
-        welcomeCta: { to: '/Chef', label: 'Open chef hub' },
+          'Publish new plates, revisit what you have shared, and keep your cookbook sharp for the community.',
+        welcomeCta: { to: '/UpdateRecipes', label: 'Manage recipes' },
         highlights: [
           { title: 'Create & publish', image: image2, to: '/CreateRecipe' },
           { title: 'Manage your board', image: image1, to: '/UpdateRecipes' },
           { title: 'Kitchen news', image: image3, to: '/ViewNews' },
-        ],
-        tools: [
-          {
-            title: 'New recipe',
-            hint: 'Add photos, ingredients, and steps',
-            to: '/CreateRecipe',
-            image: rep1,
-          },
-          {
-            title: 'View collection',
-            hint: 'See everything you have published',
-            to: '/ViewRecipes',
-            image: rep2,
-          },
-          {
-            title: 'Edit & update',
-            hint: 'Tune recipes or retire old ones',
-            to: '/UpdateRecipes',
-            image: rep5,
-          },
-          {
-            title: 'Profile',
-            hint: 'Keep your chef details current',
-            to: '/editProfile',
-            image: image4,
-          },
         ],
       };
     }
@@ -133,48 +116,20 @@ const Home = () => {
     if (role === 'user') {
       return {
         eyebrow: 'Your kitchen',
-        title: 'Find your next plate.',
+        title: firstName ? `Welcome, ${firstName}!` : 'Welcome back!',
         lead: 'Browse chef recipes, save favourites, and cook with a list built around your taste.',
-        quote: '“Cooking is like love. It should be entered into with abandon or not at all.”',
-        cite: 'Harriet Van Horne',
         primary: { to: '/RecipeList', label: 'Browse recipes' },
-        secondary: { to: '/SavedRecipes', label: 'Saved recipes' },
+        secondary: { to: '/SavedRecipes', label: 'Favourites' },
         cookLink: '/RecipeList',
         cookLabel: 'Find this recipe',
         welcomeTitle: 'Cook with a list that remembers you',
         welcomeBody:
           'Explore the full recipe board, pin dishes you love, and jump back into favourites whenever hunger hits.',
-        welcomeCta: { to: '/User', label: 'Open my kitchen' },
+        welcomeCta: { to: '/SavedRecipes', label: 'Open favourites' },
         highlights: [
           { title: 'Explore recipes', image: image2, to: '/RecipeList' },
           { title: 'Your saved list', image: image1, to: '/SavedRecipes' },
           { title: 'Hub news', image: image3, to: '/ViewNews' },
-        ],
-        tools: [
-          {
-            title: 'Recipe list',
-            hint: 'Search, filter, and rate dishes',
-            to: '/RecipeList',
-            image: rep3,
-          },
-          {
-            title: 'Saved recipes',
-            hint: 'Your favourites, one click away',
-            to: '/SavedRecipes',
-            image: rep4,
-          },
-          {
-            title: 'Latest news',
-            hint: 'Updates from the Recipe Hub team',
-            to: '/ViewNews',
-            image: image3,
-          },
-          {
-            title: 'Profile',
-            hint: 'Update your name or password',
-            to: '/editProfile',
-            image: image4,
-          },
         ],
       };
     }
@@ -182,10 +137,8 @@ const Home = () => {
     if (role === 'admin') {
       return {
         eyebrow: 'Admin',
-        title: 'Keep the hub running.',
-        lead: 'Review accounts, publish news, and watch over the Recipe Hub kitchen.',
-        quote: '“Great cooking is about being inspired by the simple things around you.”',
-        cite: 'David Chang',
+        title: firstName ? `Welcome, ${firstName}!` : 'Welcome, Admin!',
+        lead: 'Review accounts, publish news, and keep Recipe Hub running smoothly.',
         primary: { to: '/AllPages', label: 'Manage content' },
         secondary: { to: '/News', label: 'Post news' },
         cookLink: '/AllPages',
@@ -199,32 +152,6 @@ const Home = () => {
           { title: 'Publish news', image: image3, to: '/News' },
           { title: 'Community feed', image: image2, to: '/ViewNews' },
         ],
-        tools: [
-          {
-            title: 'All pages',
-            hint: 'Users, chefs, and recipes',
-            to: '/AllPages',
-            image: image1,
-          },
-          {
-            title: 'Create news',
-            hint: 'Share updates with the hub',
-            to: '/News',
-            image: image3,
-          },
-          {
-            title: 'View news',
-            hint: 'Preview the community feed',
-            to: '/ViewNews',
-            image: image2,
-          },
-          {
-            title: 'Profile',
-            hint: 'Update your admin account',
-            to: '/editProfile',
-            image: image4,
-          },
-        ],
       };
     }
 
@@ -232,10 +159,8 @@ const Home = () => {
       eyebrow: 'Recipe Hub',
       title: 'Cook with intention.',
       lead: 'Discover chef-crafted recipes, save favourites, and find inspiration for every kitchen.',
-      quote: '“Kitchens form incredibly strong characters.”',
-      cite: 'Gordon Ramsay',
       primary: { to: '/Login', label: 'Get started' },
-      secondary: { to: '/About', label: 'Our story' },
+      secondary: null,
       cookLink: '/Login',
       cookLabel: 'Cook this',
       welcomeTitle: 'Your place for culinary inspiration',
@@ -247,9 +172,8 @@ const Home = () => {
         { title: 'News & updates', image: image3, to: '/Login' },
         { title: 'Built for real kitchens', image: image1, to: '/About' },
       ],
-      tools: [],
     };
-  }, [role]);
+  }, [role, firstName]);
 
   useEffect(() => {
     const observe = (node, setter) => {
@@ -270,14 +194,12 @@ const Home = () => {
     const cleanWelcome = observe(welcomeRef.current, setWelcomeVisible);
     const cleanTrending = observe(trendingRef.current, setTrendingVisible);
     const cleanTeam = observe(teamRef.current, setTeamVisible);
-    const cleanRail = observe(railRef.current, setRailVisible);
     return () => {
       cleanWelcome();
       cleanTrending();
       cleanTeam();
-      cleanRail();
     };
-  }, [role]);
+  }, []);
 
   useEffect(() => {
     if (paused) return undefined;
@@ -290,14 +212,6 @@ const Home = () => {
     }, 3500);
     return () => clearInterval(timer);
   }, [paused, trending]);
-
-  useEffect(() => {
-    if (!experience.tools.length) return undefined;
-    const timer = setInterval(() => {
-      setActiveTool((current) => (current + 1) % experience.tools.length);
-    }, 2800);
-    return () => clearInterval(timer);
-  }, [experience.tools]);
 
   const team = [
     { id: 1, name: 'Atharva A W', email: 'waranashiwar.a@northeastern.edu', image: pic3 },
@@ -318,16 +232,18 @@ const Home = () => {
             <h1>{experience.title}</h1>
             <p className="hp-hero__lead">{experience.lead}</p>
             <blockquote className="hp-hero__quote">
-              <p>{experience.quote}</p>
-              <cite>{experience.cite}</cite>
+              <p>“Kitchens form incredibly strong characters.”</p>
+              <cite>Gordon Ramsay</cite>
             </blockquote>
             <div className="hp-hero__actions">
               <Link to={experience.primary.to} className="rh-btn rh-btn--cta">
                 {experience.primary.label}
               </Link>
-              <Link to={experience.secondary.to} className="rh-btn rh-btn--ghost">
-                {experience.secondary.label}
-              </Link>
+              {experience.secondary && (
+                <Link to={experience.secondary.to} className="rh-btn rh-btn--ghost">
+                  {experience.secondary.label}
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -343,38 +259,6 @@ const Home = () => {
           ))}
         </div>
       </section>
-
-      {experience.tools.length > 0 && (
-        <section
-          className={`hp-rail reveal ${railVisible ? 'is-visible' : ''}`}
-          ref={railRef}
-        >
-          <div className="site-wrap">
-            <div className="section-head reveal-child">
-              <h2>{role === 'chef' ? 'Chef tools' : role === 'admin' ? 'Admin tools' : 'Quick actions'}</h2>
-              <p>Hover or tap a card — the spotlight follows your next step</p>
-            </div>
-            <div className="hp-rail__grid">
-              {experience.tools.map((tool, index) => (
-                <Link
-                  key={tool.title}
-                  to={tool.to}
-                  className={`hp-rail__card reveal-child ${activeTool === index ? 'is-active' : ''}`}
-                  style={{ transitionDelay: `${80 + index * 70}ms` }}
-                  onMouseEnter={() => setActiveTool(index)}
-                  onFocus={() => setActiveTool(index)}
-                >
-                  <img src={tool.image} alt="" />
-                  <div className="hp-rail__copy">
-                    <h3>{tool.title}</h3>
-                    <p>{tool.hint}</p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       <section
         className={`hp-welcome ${welcomeVisible ? 'is-visible' : ''}`}
