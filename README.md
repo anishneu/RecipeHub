@@ -2,7 +2,7 @@
 
 Full-stack, role-based recipe discovery and publishing platform.
 
-<img src="assets/recipehub-landing.png" alt="Recipe Hub landing page" width="800"/>
+<img src="images/recipehub-landing.png" alt="Recipe Hub landing page" width="800"/>
 
 Recipe Hub lets three kinds of users — general users, chefs, and admins — interact with a shared recipe catalog differently: general users discover and save recipes, chefs publish and manage their own, and the platform layers in live culinary news alongside seasonal UI theming. The API is documented with Swagger rather than left for the frontend to reverse-engineer, and auth is JWT-based with bcrypt-hashed credentials rather than rolled by hand.
 
@@ -10,7 +10,7 @@ Recipe Hub lets three kinds of users — general users, chefs, and admins — in
 
 **Author:** Anish Kuila
 
-**Live demo:** [anish-recipehub.netlify.app](https://anish-recipehub.netlify.app/Home)
+**Live demo:** [anish-recipehub.netlify.app](https://anish-recipehub.netlify.app)
 
 **Status:** Feature-complete, deployed live
 
@@ -57,7 +57,7 @@ Counted directly from the route files:
 
 | Metric | Count |
 |---|---|
-| REST API endpoints | 23, across 4 route modules (user, recipe, news, email) |
+| REST API endpoints | 24, across 4 route modules (user, recipe, news, email) |
 | User roles | 3 (Admin, Chef, General User) |
 | Data models | 3 (User, Recipe, HubNews) |
 
@@ -77,6 +77,7 @@ cp .env.example .env   # MONGO_URI, JWT_SECRET, SMTP creds
 # Frontend
 cd ../frontend
 npm install
+cp .env.example .env   # REACT_APP_API_URL (defaults to http://localhost:5000)
 ```
 
 ## Quickstart
@@ -89,7 +90,7 @@ cd backend && npm start        # runs on the port set in .env
 cd frontend && npm start       # CRA dev server on :3000
 ```
 
-Or skip local setup entirely and try the live deployment: **[anish-recipehub.netlify.app](https://anish-recipehub.netlify.app/Home)**
+Or skip local setup entirely and try the live deployment: **[anish-recipehub.netlify.app](https://anish-recipehub.netlify.app)**
 
 API docs (Swagger UI) are served once the backend is running — see `backend/src/routes` for the mount path.
 
@@ -104,9 +105,10 @@ RecipeHub/
 │       └── services/      Business logic
 └── frontend/
     └── src/
-        ├── Component/     UI components
+        ├── Component/     UI components (incl. Footer, social links)
         ├── Redux/          Store, actions, reducers
-        └── actions/        Redux action creators
+        ├── actions/        Redux action creators
+        └── api.js           Centralized API base URL (env-driven, backend-agnostic)
 ```
 
 ## API reference
@@ -114,7 +116,7 @@ RecipeHub/
 | Route group | Endpoints | Purpose |
 |---|---|---|
 | `/user` | 10 | Register, login, edit, get chefs/users, saved-recipe management |
-| `/recipe` | 10 | CRUD, search by tag/ingredients/rating, ratings |
+| `/recipe` | 11 | CRUD, search by tag/ingredients/rating, ratings |
 | `/news` | 2 | Create/fetch culinary news items |
 | `/email` | 1 | Contact/notification email send |
 
